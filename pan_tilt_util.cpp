@@ -1,0 +1,133 @@
+
+#include <iostream>
+#include "Log.h"
+#include "InteractiveCommandRouter.h"
+
+#include "i2c_interface.h"
+#include "pwm_controller.h"
+#include "ads1115_interface.h"
+#include "pan_tilt_controller.h"
+#include "lidar_lite.h"
+#include "pan_tilt_thread.h"
+
+using namespace coral;
+using namespace coral::cli;
+
+#define  PWM_FREQ_HZ    60
+
+#define  PAN_CHANNEL    0
+#define  TILT_CHANNEL   4
+
+
+class PanCommand : public InteractiveCommand {
+public:
+   IdleCommand( PanTiltController& pan_tilt )
+      : InteractiveCommand( "pan", "Pan gimbal")
+      , pan_tilt_( pan_tilt ) {};
+   void process(const coral::cli::ArgumentList& args)
+   {
+      float newTheta = pan_tilt_.get_theta() + 
+      pan_tilt_.set_position( pan_tilt_.get_phi(),  );
+   }
+private:
+
+   PanTiltController& pan_tilt_;
+};
+
+class TiltCommand : public InteractiveCommand {
+public:
+   RasterCommand( PanTiltController& pan_tilt )
+      : InteractiveCommand( "tilt", "Tilt gimbal")
+      , pan_tilt_( pan_tilt ) {};
+   void process(const coral::cli::ArgumentList& args)
+   {
+      pan_tilt_.set_mode( PanTiltThread::kRaster );
+   }
+private:
+
+   PanTiltController& pan_tilt_;
+};
+
+class PointCommand : public InteractiveCommand {
+public:
+   PointCommand( PanTiltController& pan_tilt )
+      : InteractiveCommand( "point", "Set position" )
+      , pan_tilt_( pan_tilt ) {};
+   void process(const coral::cli::ArgumentList& args)
+   {
+      if ( args.size() == 2 )
+         pan_tilt_.set_stare_point( atof(args[0].c_str()), atof(args[1].c_str()) );
+      else {
+         log::error("'point' command expects two arguments\n");
+      }
+   }
+private:
+
+   PanTiltController& pan_tilt_;
+};
+
+
+class PointCallback : public PanTiltThread::MeasurementCallback {
+public:
+
+   void operator()( PanTiltThread::ControlMode mode, const PanTiltThread::Point& point )
+   {
+      if ( mode == PanTiltThread::kRaster )
+         log::status("phi = %0.4f, theta = %0.4f, r = %0.6f\n",point.phi,point.theta,point.r);
+   }
+
+};
+
+
+int main( int argc, char** argv )
+{
+   I2cInterface* i2c = I2cInterface::instance( "/dev/i2c-1" );
+
+   if ( i2c )
+   {
+      PwmController    pwm( i2c );
+      // Ads1115Interface adc( i2c );
+
+      if ( pwm.initialize() )
+      {
+         bool init_success = true;
+
+         if ( pwm.set_frequency( PWM_FREQ_HZ ) == false )
+         {
+            log::error("Failed to configure PWM frequency.\n");
+            init_success = false;
+         }
+
+         if ( init_success )
+         {
+            PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
+
+            InteractiveCommandRouter router;
+
+            router.add_arg( std::make_shared<PanCommand>(pan_tilt) );
+            router.add_arg( std::make_shared<TiltCommand>(pan_tilt) );
+            router.add_arg( std::make_shared<PointCommand>(pan_tilt) );
+            
+            router.run();
+         }
+         else
+         {
+            log::error("Failed to set PWM frequency.\n");
+         }
+      }
+      else
+      {
+         log::error("Failed to initialize PWM controller.\n");
+      }
+   }
+   else
+   {
+      log::error("Failed to open I2C interface.\n");
+   }
+
+   I2cInterface::destroy();
+
+   log::flush();
+
+   return 0;
+}
