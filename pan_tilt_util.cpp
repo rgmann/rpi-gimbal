@@ -1,4 +1,5 @@
 
+#include <string>
 #include <iostream>
 #include "Log.h"
 #include "InteractiveCommandRouter.h"
@@ -26,8 +27,8 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float newTheta = pan_tilt_.get_theta() + 
-      pan_tilt_.set_position( pan_tilt_.get_phi(),  );
+      float new_theta = pan_tilt_.get_theta() + std::stoi(args[0]);
+      pan_tilt_.set_position( pan_tilt_.get_phi(), new_theta );
    }
 private:
 
@@ -41,7 +42,8 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      pan_tilt_.set_mode( PanTiltThread::kRaster );
+      float new_phi = pan_tilt_.get_theta() + std::stoi(args[0]);
+      pan_tilt_.set_position( pan_tilt_.get_theta(), new_phi );
    }
 private:
 
@@ -55,11 +57,9 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      if ( args.size() == 2 )
-         pan_tilt_.set_stare_point( atof(args[0].c_str()), atof(args[1].c_str()) );
-      else {
-         log::error("'point' command expects two arguments\n");
-      }
+      float new_theta = std::stoi(args[0]);
+      float new_phi = std::stoi(args[1]);
+      pan_tilt_.set_position( new_theta, new_phi );
    }
 private:
 
@@ -67,16 +67,16 @@ private:
 };
 
 
-class PointCallback : public PanTiltThread::MeasurementCallback {
-public:
+// class PointCallback : public PanTiltThread::MeasurementCallback {
+// public:
 
-   void operator()( PanTiltThread::ControlMode mode, const PanTiltThread::Point& point )
-   {
-      if ( mode == PanTiltThread::kRaster )
-         log::status("phi = %0.4f, theta = %0.4f, r = %0.6f\n",point.phi,point.theta,point.r);
-   }
+//    void operator()( PanTiltThread::ControlMode mode, const PanTiltThread::Point& point )
+//    {
+//       if ( mode == PanTiltThread::kRaster )
+//          log::status("phi = %0.4f, theta = %0.4f, r = %0.6f\n",point.phi,point.theta,point.r);
+//    }
 
-};
+// };
 
 
 int main( int argc, char** argv )
