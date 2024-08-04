@@ -95,7 +95,7 @@ private:
 
 private:
 
-   static const int kInvalidHandle = -1;
+   static constexpr int kInvalidHandle = -1;
    
    int handle_;
 

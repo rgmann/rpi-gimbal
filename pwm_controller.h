@@ -41,8 +41,8 @@ class I2cInterface;
 class PwmController {
 public:
 
-   static const uint16_t kNumTicks = 4096;
-   static const uint16_t kDefaultAddress = 0x0040;
+   static constexpr uint16_t kNumTicks = 4096;
+   static constexpr uint16_t kDefaultAddress = 0x0040;
    PwmController( I2cInterface* interface, uint16_t address = kDefaultAddress );
 
    bool initialize();

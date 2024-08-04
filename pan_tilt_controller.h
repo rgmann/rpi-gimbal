@@ -40,8 +40,8 @@ public:
 
    PanTiltController( PwmController* controller, uint8_t pan_channel, uint8_t tilt_channel );
 
-   static const float kMinAngleRadians = 0.0;
-   static const float kMaxAngleRadians = 3.14159265358979323846;
+   static constexpr float kMinAngleRadians = 0.0;
+   static constexpr float kMaxAngleRadians = 3.14159265358979323846;
 
    bool set_position( float phi, float theta );
 
@@ -56,12 +56,12 @@ private:
 private:
 
    // @ 60Hz/4096 ticks: 45 = 403, 90 = 520
-   static const float kThetaMinPulseWidthMs = 1.1637369791666667;
-   static const float kThetaMaxPulseWidthMs = 3.068033854166667;
+   static constexpr float kThetaMinPulseWidthMs = 1.1637369791666667;
+   static constexpr float kThetaMaxPulseWidthMs = 3.068033854166667;
 
    // @ 60Hz/4096 ticks: 45 = 316, 90 = 431
-   static const float kPhiMinPulseWidthMs = 0.8178710937500001;
-   static const float kPhiMaxPulseWidthMs = 2.689615885416667;
+   static constexpr float kPhiMinPulseWidthMs = 0.8178710937500001;
+   static constexpr float kPhiMaxPulseWidthMs = 2.689615885416667;
 
    PwmController* controller_;
 
