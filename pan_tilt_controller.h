@@ -42,6 +42,9 @@ public:
 
    static constexpr float kMinAngleRadians = 0.0;
    static constexpr float kMaxAngleRadians = 3.14159265358979323846;
+   static constexpr float kMaxSpeedRadPerSec = 1.0;
+
+   bool set_speed( float rad_per_sec );
 
    bool set_position( float phi, float theta );
    bool ease_position( float phi, float theta );
@@ -75,6 +78,8 @@ private:
    uint16_t theta_max_ticks_;
    uint16_t phi_min_ticks_;
    uint16_t phi_max_ticks_;
+
+   float speed_rad_per_sec_;
 
    float current_phi_;
    float current_theta_;

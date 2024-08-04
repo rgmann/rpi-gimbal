@@ -93,6 +93,22 @@ private:
    PanTiltController& pan_tilt_;
 };
 
+class SetSpeedCommand : public InteractiveCommand {
+public:
+
+   SetSpeedCommand( PanTiltController& pan_tilt )
+      : InteractiveCommand( "setspeed", "Set speed" )
+      , pan_tilt_( pan_tilt ) {};
+
+   void process(const coral::cli::ArgumentList& args)
+   {
+      pan_tilt_.set_speed(deg_to_rad(std::stof(args[0])));
+   }
+private:
+
+   PanTiltController& pan_tilt_;
+};
+
 
 // class PointCallback : public PanTiltThread::MeasurementCallback {
 // public:
@@ -137,6 +153,7 @@ int main( int argc, char** argv )
             router.add( std::make_shared<TiltCommand>(pan_tilt) );
             router.add( std::make_shared<PointCommand>(pan_tilt) );
             router.add( std::make_shared<GetPointCommand>(pan_tilt) );
+            router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
             
             router.run();
          }

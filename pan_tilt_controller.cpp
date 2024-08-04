@@ -62,6 +62,7 @@ PanTiltController::PanTiltController(
    , theta_max_ticks_( 0 )
    , phi_min_ticks_( 0 )
    , phi_max_ticks_( 0 )
+   , speed_rad_per_sec_( PanTiltController::kMaxSpeedRadPerSec )
    , current_phi_( 0.0 )
    , current_theta_( 0.0 )
 {
@@ -93,6 +94,18 @@ PanTiltController::PanTiltController(
 
       set_position( current_phi_, current_theta_ );
    }
+}
+
+//-----------------------------------------------------------------------------
+bool PanTiltController::set_speed( float rad_per_sec )
+{
+   if ( rad_per_sec <= PanTiltController::kMaxRadPerSec )
+   {
+      speed_rad_per_sec_ = rad_per_sec;
+      return true;
+   }
+
+   return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -175,13 +188,13 @@ bool PanTiltController::ease_position( float phi, float theta )
             float nextPhi = current_phi_;
             if ( !at_target_phi )
             {
-               nextPhi += kMaxRadPerSec * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_phi;
+               nextPhi += speed_rad_per_sec_ * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_phi;
             }
 
             float nextTheta = current_theta_;
             if ( !at_target_theta )
             {
-               nextTheta += kMaxRadPerSec * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_theta;
+               nextTheta += speed_rad_per_sec_ * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_theta;
             }
 
             at_target = at_target_phi && at_target_theta;
