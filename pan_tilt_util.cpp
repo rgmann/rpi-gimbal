@@ -6,10 +6,8 @@
 
 #include "i2c_interface.h"
 #include "pwm_controller.h"
-#include "ads1115_interface.h"
 #include "pan_tilt_controller.h"
-#include "lidar_lite.h"
-#include "pan_tilt_thread.h"
+// #include "pan_tilt_thread.h"
 
 using namespace coral;
 using namespace coral::cli;
