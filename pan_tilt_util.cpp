@@ -102,9 +102,9 @@ int main( int argc, char** argv )
 
             InteractiveCommandRouter router;
 
-            router.add_arg( std::make_shared<PanCommand>(pan_tilt) );
-            router.add_arg( std::make_shared<TiltCommand>(pan_tilt) );
-            router.add_arg( std::make_shared<PointCommand>(pan_tilt) );
+            router.add( std::make_shared<PanCommand>(pan_tilt) );
+            router.add( std::make_shared<TiltCommand>(pan_tilt) );
+            router.add( std::make_shared<PointCommand>(pan_tilt) );
             
             router.run();
          }
