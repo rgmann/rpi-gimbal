@@ -175,7 +175,7 @@ bool PanTiltController::ease_position( float phi, float theta )
             float nextPhi = current_phi_;
             if ( !at_target_phi )
             {
-               nextPhi += kMaxRadPerSec * kControlIntervalMs * kMilliSecondsPerSecond * dir_mult_phi;
+               nextPhi += kMaxRadPerSec * ( kControlIntervalMs / kMilliSecondsPerSecond ) * dir_mult_phi;
             }
 
             float nextTheta = current_theta_;
