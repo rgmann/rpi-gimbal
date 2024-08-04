@@ -139,27 +139,27 @@ bool PanTiltController::set_position( float phi, float theta )
 bool PanTiltController::ease_position( float phi, float theta )
 {
    constexpr float kMaxRadPerSec = 0.52;
-   constexpr int32_t kControlIntervalMs = 10;
-   constexpr int32_t kMilliSecondsPerSecond = 1000;
+   constexpr float kControlIntervalMs = 10.0;
+   constexpr float kMilliSecondsPerSecond = 1000.0;
    constexpr float kServoDeadzoneRad = 0.03;
 
    bool success = false;
-   int32_t dir_mult_phi = (phi > current_phi_) ? 1 : -1;
-   int32_t dir_mult_theta = (theta > current_theta_) ? 1 : -1;
+   const float dir_mult_phi = (phi > current_phi_) ? 1 : -1;
+   const float dir_mult_theta = (theta > current_theta_) ? 1 : -1;
 
    if ( controller_ )
    {
       if ( in_range( phi, kMinAngleRadians, kMaxAngleRadians ) == false )
       {
          log::error(
-            "PanTiltController::set_position: "
+            "PanTiltController::ease_position: "
             "phi=%0.4f must be in range [%0.1f,%0.4f]\n",
             phi, kMinAngleRadians, kMaxAngleRadians );
       }
       else if ( in_range( theta, kMinAngleRadians, kMaxAngleRadians ) == false )
       {
          log::error(
-            "PanTiltController::set_position: "
+            "PanTiltController::ease_position: "
             "theta=%0.4f must be in range [%0.1f,%0.4f]\n",
             theta, kMinAngleRadians, kMaxAngleRadians );
       }
