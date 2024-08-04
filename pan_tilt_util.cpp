@@ -81,7 +81,7 @@ public:
 private:
 
    PanTiltController& pan_tilt_;
-}
+};
 
 
 // class PointCallback : public PanTiltThread::MeasurementCallback {
