@@ -139,7 +139,7 @@ bool PanTiltController::set_position( float phi, float theta )
 bool PanTiltController::ease_position( float phi, float theta )
 {
    constexpr float kMaxRadPerSec = 0.52;
-   constexpr float kControlIntervalMs = 10.0;
+   constexpr int32_t kControlIntervalMs = 10.0;
    constexpr float kMilliSecondsPerSecond = 1000.0;
    constexpr float kServoDeadzoneRad = 0.03;
 
@@ -175,18 +175,21 @@ bool PanTiltController::ease_position( float phi, float theta )
             float nextPhi = current_phi_;
             if ( !at_target_phi )
             {
-               nextPhi += kMaxRadPerSec * ( kControlIntervalMs / kMilliSecondsPerSecond ) * dir_mult_phi;
+               nextPhi += kMaxRadPerSec * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_phi;
             }
 
             float nextTheta = current_theta_;
             if ( !at_target_theta )
             {
-               nextTheta += kMaxRadPerSec * ( kControlIntervalMs / kMilliSecondsPerSecond ) * dir_mult_theta;
+               nextTheta += kMaxRadPerSec * ( static_cast<float>(kControlIntervalMs) / kMilliSecondsPerSecond ) * dir_mult_theta;
             }
 
             at_target = at_target_phi && at_target_theta;
 
-            set_position(nextPhi, nextTheta);
+            if ( !set_position(nextPhi, nextTheta) )
+            {
+               return false;
+            }
 
             boost::this_thread::sleep(boost::posix_time::milliseconds( kControlIntervalMs ));
          }
