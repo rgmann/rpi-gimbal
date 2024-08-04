@@ -1,6 +1,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 #include "Log.h"
 #include "InteractiveCommandRouter.h"
 
@@ -64,6 +65,24 @@ private:
    PanTiltController& pan_tilt_;
 };
 
+class GetPointCommand : public InteractiveCommand {
+public:
+
+   GetPointCommand( PanTiltController& pan_tilt )
+      : InteractiveCommand( "getpoint", "Get position" )
+      , pan_tilt_( pan_tilt ) {};
+
+   void process(const coral::cli::ArgumentList& args)
+   {
+      std::stringstream position;
+      position << "Theta = " << pan_tilt_.get_theta() << "rad,  Phi = " << pan_tilt_.get_phi() << " rad" << std::endl;
+      coral::log::status(position.str());
+   }
+private:
+
+   PanTiltController& pan_tilt_;
+}
+
 
 // class PointCallback : public PanTiltThread::MeasurementCallback {
 // public:
@@ -107,6 +126,7 @@ int main( int argc, char** argv )
             router.add( std::make_shared<PanCommand>(pan_tilt) );
             router.add( std::make_shared<TiltCommand>(pan_tilt) );
             router.add( std::make_shared<PointCommand>(pan_tilt) );
+            router.add( std::make_shared<GetPointCommand>(pan_tilt) );
             
             router.run();
          }
