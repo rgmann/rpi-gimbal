@@ -26,7 +26,7 @@ public:
    void process(const coral::cli::ArgumentList& args)
    {
       float new_theta = pan_tilt_.get_theta() + std::stoi(args[0]);
-      pan_tilt_.set_position( pan_tilt_.get_phi(), new_theta );
+      pan_tilt_.set_position( new_theta, pan_tilt_.get_phi() );
    }
 private:
 
@@ -40,7 +40,7 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_phi = pan_tilt_.get_theta() + std::stoi(args[0]);
+      float new_phi = pan_tilt_.get_phi() + std::stoi(args[0]);
       pan_tilt_.set_position( pan_tilt_.get_theta(), new_phi );
    }
 private:
@@ -79,6 +79,8 @@ private:
 
 int main( int argc, char** argv )
 {
+   coral::log::level( coral::log::Verbose );
+
    I2cInterface* i2c = I2cInterface::instance( "/dev/i2c-1" );
 
    if ( i2c )
