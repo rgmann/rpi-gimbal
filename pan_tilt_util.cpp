@@ -26,7 +26,7 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_theta = pan_tilt_.get_theta() + std::stoi(args[0]);
+      float new_theta = pan_tilt_.get_theta() + std::stof(args[0]);
       pan_tilt_.set_position( pan_tilt_.get_phi(), new_theta );
    }
 private:
@@ -41,7 +41,7 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_phi = pan_tilt_.get_phi() + std::stoi(args[0]);
+      float new_phi = pan_tilt_.get_phi() + std::stof(args[0]);
       pan_tilt_.set_position( new_phi, pan_tilt_.get_theta() );
    }
 private:
@@ -56,8 +56,8 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_theta = std::stoi(args[0]);
-      float new_phi = std::stoi(args[1]);
+      float new_theta = std::stof(args[0]);
+      float new_phi = std::stof(args[1]);
       pan_tilt_.set_position( new_theta, new_phi );
    }
 private:
