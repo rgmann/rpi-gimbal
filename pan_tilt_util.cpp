@@ -20,7 +20,7 @@ using namespace coral::cli;
 
 class PanCommand : public InteractiveCommand {
 public:
-   IdleCommand( PanTiltController& pan_tilt )
+   PanCommand( PanTiltController& pan_tilt )
       : InteractiveCommand( "pan", "Pan gimbal")
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
@@ -35,7 +35,7 @@ private:
 
 class TiltCommand : public InteractiveCommand {
 public:
-   RasterCommand( PanTiltController& pan_tilt )
+   TiltCommand( PanTiltController& pan_tilt )
       : InteractiveCommand( "tilt", "Tilt gimbal")
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
