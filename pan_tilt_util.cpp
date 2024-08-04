@@ -85,7 +85,7 @@ public:
    void process(const coral::cli::ArgumentList& args)
    {
       std::stringstream position;
-      position << "Theta = " << pan_tilt_.get_theta() << "rad,  Phi = " << pan_tilt_.get_phi() << " rad" << std::endl;
+      position << "Theta = " << rad_to_deg(pan_tilt_.get_theta()) << "deg,  Phi = " << rad_to_deg(pan_tilt_.get_phi()) << " deg" << std::endl;
       coral::log::status(position.str().c_str());
    }
 private:
