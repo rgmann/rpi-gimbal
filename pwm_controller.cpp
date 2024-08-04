@@ -30,7 +30,7 @@
 // Date: 2015-11-15
 // 
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/chrono/chrono.hpp>
 #include <boost/thread/thread.hpp>
 
 #include "Log.h"
@@ -99,7 +99,7 @@ bool PwmController::initialize()
          ) == I2cInterface::kSuccess )
          {
             // TODO: Sleep 5 ms
-            boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+            boost::this_thread::sleep_for(boost::chrono::duration<int, boost::chrono::milli>(5));
 
             uint8_t current_mode = 0;
             size_t bytes_rcvd = 0;
