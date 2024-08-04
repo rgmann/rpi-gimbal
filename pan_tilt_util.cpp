@@ -76,7 +76,7 @@ public:
    {
       std::stringstream position;
       position << "Theta = " << pan_tilt_.get_theta() << "rad,  Phi = " << pan_tilt_.get_phi() << " rad" << std::endl;
-      coral::log::status(position.str());
+      coral::log::status(position.str().c_str());
    }
 private:
 
