@@ -136,6 +136,66 @@ bool PanTiltController::set_position( float phi, float theta )
 }
 
 //-----------------------------------------------------------------------------
+bool PanTiltController::ease_position( float phi, float theta )
+{
+   constexpr float kMaxRadPerSec = 0.52;
+   constexpr int32_t kControlIntervalMs = 10;
+   constexpr int32_t kMilliSecondsPerSecond = 1000;
+
+   bool success = false;
+   int32_t dir_mult_phi = (phi > current_phi_) ? 1 : -1;
+   int32_t dir_mult_theta = (theta > current_theta_) ? 1 : -1;
+
+   if ( controller_ )
+   {
+      if ( in_range( phi, kMinAngleRadians, kMaxAngleRadians ) == false )
+      {
+         log::error(
+            "PanTiltController::set_position: "
+            "phi=%0.4f must be in range [%0.1f,%0.4f]\n",
+            phi, kMinAngleRadians, kMaxAngleRadians );
+      }
+      else if ( in_range( theta, kMinAngleRadians, kMaxAngleRadians ) == false )
+      {
+         log::error(
+            "PanTiltController::set_position: "
+            "theta=%0.4f must be in range [%0.1f,%0.4f]\n",
+            theta, kMinAngleRadians, kMaxAngleRadians );
+      }
+      else
+      {
+         bool at_target = false;
+
+         while ( !at_target )
+         {
+            bool at_target_phi = in_range(current_phi_, phi - kServoDeadzone, phi + kServoDeadzone);
+            bool at_target_theta = in_range(current_theta_, theta - kServoDeadzone, theta + kServoDeadzone);
+
+            float nextPhi = current_phi_;
+            if ( !at_target_phi )
+            {
+               nextPhi += kMaxRadPerSec * kControlIntervalMs * kMilliSecondsPerSecond * dir_mult_phi;
+            }
+
+            float nextTheta = current_theta_;
+            if ( !at_target_phi )
+            {
+               nextPhi += kMaxRadPerSec * kControlIntervalMs * kMilliSecondsPerSecond * dir_mult_theta;
+            }
+
+            this->set_position(nextPhi, nextTheta);
+
+            boost::this_thread::sleep(boost::posix_time::milliseconds( kControlIntervalMs ));
+         }
+
+         success = true;
+      }
+   }
+
+   return success;
+}
+
+//-----------------------------------------------------------------------------
 float PanTiltController::get_phi() const
 {
    return current_phi_;

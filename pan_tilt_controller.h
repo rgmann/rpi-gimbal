@@ -44,6 +44,7 @@ public:
    static constexpr float kMaxAngleRadians = 3.14159265358979323846;
 
    bool set_position( float phi, float theta );
+   bool ease_position( float phi, float theta );
 
    float get_phi() const;
    float get_theta() const;

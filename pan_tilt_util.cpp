@@ -18,6 +18,16 @@ using namespace coral::cli;
 #define  PAN_CHANNEL    0
 #define  TILT_CHANNEL   4
 
+float rad_to_deg(float rad)
+{
+   return (rad * 180.0) / 3.14159;
+}
+
+float deg_to_rad(float deg)
+{
+return (deg * 3.14159) / 180.0;
+}
+
 
 class PanCommand : public InteractiveCommand {
 public:
@@ -26,7 +36,7 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_theta = pan_tilt_.get_theta() + std::stof(args[0]);
+      float new_theta = pan_tilt_.get_theta() + deg_to_rad(std::stof(args[0]));
       pan_tilt_.set_position( pan_tilt_.get_phi(), new_theta );
    }
 private:
@@ -41,7 +51,7 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_phi = pan_tilt_.get_phi() + std::stof(args[0]);
+      float new_phi = pan_tilt_.get_phi() + deg_to_rad(std::stof(args[0]));
       pan_tilt_.set_position( new_phi, pan_tilt_.get_theta() );
    }
 private:
@@ -56,8 +66,8 @@ public:
       , pan_tilt_( pan_tilt ) {};
    void process(const coral::cli::ArgumentList& args)
    {
-      float new_theta = std::stof(args[0]);
-      float new_phi = std::stof(args[1]);
+      float new_theta = deg_to_rad(std::stof(args[0]));
+      float new_phi = deg_to_rad(std::stof(args[1]));
       pan_tilt_.set_position( new_theta, new_phi );
    }
 private:
