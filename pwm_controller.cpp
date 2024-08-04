@@ -99,7 +99,7 @@ bool PwmController::initialize()
          ) == I2cInterface::kSuccess )
          {
             // TODO: Sleep 5 ms
-            boost::this_thread::sleep_for(boost::chrono::duration<int, boost::chrono::milli>(5));
+            boost::this_thread::sleep_for(boost::chrono::milliseconds(5));
 
             uint8_t current_mode = 0;
             size_t bytes_rcvd = 0;
