@@ -62,7 +62,7 @@ PanTiltController::PanTiltController(
    , theta_max_ticks_( 0 )
    , phi_min_ticks_( 0 )
    , phi_max_ticks_( 0 )
-   , speed_rad_per_sec_( PanTiltController::kMaxSpeedRadPerSec )
+   , speed_rad_per_sec_( 0.52 )
    , current_phi_( 0.0 )
    , current_theta_( 0.0 )
 {
@@ -99,7 +99,7 @@ PanTiltController::PanTiltController(
 //-----------------------------------------------------------------------------
 bool PanTiltController::set_speed( float rad_per_sec )
 {
-   if ( rad_per_sec <= PanTiltController::kMaxRadPerSec )
+   if ( rad_per_sec <= PanTiltController::kMaxSpeedRadPerSec )
    {
       speed_rad_per_sec_ = rad_per_sec;
       return true;
@@ -151,7 +151,6 @@ bool PanTiltController::set_position( float phi, float theta )
 //-----------------------------------------------------------------------------
 bool PanTiltController::ease_position( float phi, float theta )
 {
-   constexpr float kMaxRadPerSec = 0.52;
    constexpr int32_t kControlIntervalMs = 10.0;
    constexpr float kMilliSecondsPerSecond = 1000.0;
    constexpr float kServoDeadzoneRad = 0.03;
