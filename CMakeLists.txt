@@ -9,6 +9,13 @@ endif (POLICY CMP0015)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.47 REQUIRED system filesystem thread)
+# add_definitions( "-Wno-unused-local-typedefs" )
+
+include_directories( ${Boost_INCLUDE_DIRS} )
+
 set( BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../coral )
 set( INCLUDE_ROOT "${BASE_DIR}/includes" )
 set( CORE_INCLUDE ${INCLUDE_ROOT}/core )
@@ -36,3 +43,4 @@ add_executable(
 
 target_link_libraries( pan_tilt_util scanner_common )
 target_link_libraries( pan_tilt_util coral_core_shared )
+target_link_libraries( coral_core_shared ${Boost_LIBRARIES} )
