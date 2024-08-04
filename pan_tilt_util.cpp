@@ -27,7 +27,7 @@ public:
    void process(const coral::cli::ArgumentList& args)
    {
       float new_theta = pan_tilt_.get_theta() + std::stoi(args[0]);
-      pan_tilt_.set_position( new_theta, pan_tilt_.get_phi() );
+      pan_tilt_.set_position( pan_tilt_.get_phi(), new_theta );
    }
 private:
 
@@ -42,7 +42,7 @@ public:
    void process(const coral::cli::ArgumentList& args)
    {
       float new_phi = pan_tilt_.get_phi() + std::stoi(args[0]);
-      pan_tilt_.set_position( pan_tilt_.get_theta(), new_phi );
+      pan_tilt_.set_position( new_phi, pan_tilt_.get_theta() );
    }
 private:
 
