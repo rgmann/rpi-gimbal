@@ -141,6 +141,7 @@ bool PanTiltController::ease_position( float phi, float theta )
    constexpr float kMaxRadPerSec = 0.52;
    constexpr int32_t kControlIntervalMs = 10;
    constexpr int32_t kMilliSecondsPerSecond = 1000;
+   constexpr float kServoDeadzoneRad = 0.03;
 
    bool success = false;
    int32_t dir_mult_phi = (phi > current_phi_) ? 1 : -1;
@@ -168,8 +169,8 @@ bool PanTiltController::ease_position( float phi, float theta )
 
          while ( !at_target )
          {
-            bool at_target_phi = in_range(current_phi_, phi - kServoDeadzone, phi + kServoDeadzone);
-            bool at_target_theta = in_range(current_theta_, theta - kServoDeadzone, theta + kServoDeadzone);
+            bool at_target_phi = in_range(current_phi_, phi - kServoDeadzoneRad, phi + kServoDeadzoneRad);
+            bool at_target_theta = in_range(current_theta_, theta - kServoDeadzoneRad, theta + kServoDeadzoneRad);
 
             float nextPhi = current_phi_;
             if ( !at_target_phi )
