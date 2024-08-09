@@ -126,7 +126,7 @@ int main( int argc, char** argv )
 {
    coral::log::level( coral::log::Verbose );
 
-   I2cInterface* i2c = I2cInterface::instance( "/dev/i2c-1" );
+   std::shared_ptr<I2cInterface> i2c = I2cInterface::instance( "/dev/i2c-1" );
 
    if ( i2c )
    {
@@ -171,8 +171,6 @@ int main( int argc, char** argv )
    {
       log::error("Failed to open I2C interface.\n");
    }
-
-   I2cInterface::destroy();
 
    log::flush();
 

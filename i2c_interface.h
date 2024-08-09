@@ -35,6 +35,7 @@
 
 #include <stdint.h>
 #include <cstddef>
+#include <memory>
 
 class I2cInterface {
 public:
@@ -59,8 +60,7 @@ public:
    ///
    /// @return I2cInterface*  Pointer to I2C interface instance
    ///
-   static I2cInterface* instance( const char* device_path = NULL );
-   static void destroy();
+   static std::shared_ptr<I2cInterface> instance( const char* device_path = NULL );
 
    ///
    /// Open the I2C interface
@@ -101,7 +101,7 @@ private:
 
    uint32_t capabilities_;
 
-   static I2cInterface*  our_instance_;
+   static std::shared_ptr<I2cInterface>  our_instance_;
 };
 
 #endif // I2C_INTERFACE_H

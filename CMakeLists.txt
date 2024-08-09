@@ -35,7 +35,9 @@ link_directories( ${BASE_DIR}/lib/core )
 add_library( scanner_common STATIC 
    i2c_interface.cpp
    pwm_controller.cpp
-   pan_tilt_controller.cpp )
+   pan_tilt_controller.cpp
+   adxl345_controller.cpp
+   gimbal_controller_thread.cpp )
 
 add_executable(
    pan_tilt_util

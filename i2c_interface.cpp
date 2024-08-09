@@ -49,7 +49,7 @@
 
 using namespace coral;
 
-I2cInterface* I2cInterface::our_instance_ = NULL;
+std::shared_ptr<I2cInterface> I2cInterface::our_instance_;
 
 //-----------------------------------------------------------------------------
 I2cInterface::I2cInterface()
@@ -65,29 +65,19 @@ I2cInterface::~I2cInterface()
 }
 
 //-----------------------------------------------------------------------------
-I2cInterface* I2cInterface::instance( const char* device_path )
+std::shared_ptr<I2cInterface> I2cInterface::instance( const char* device_path )
 {
-   if ( our_instance_ == NULL )
+   if ( !our_instance_ )
    {
-      our_instance_ = new I2cInterface();
+      our_instance_ = std::make_shared<I2cInterface>();
 
       if ( device_path )
       {
-         if ( our_instance_->open( device_path ) == false )
-         {
-            destroy();
-         }
+         our_instance_->open( device_path );
       }
    }
 
    return our_instance_;
-}
-
-//-----------------------------------------------------------------------------
-void I2cInterface::destroy()
-{
-   delete our_instance_;
-   our_instance_ = NULL;
 }
 
 //-----------------------------------------------------------------------------
