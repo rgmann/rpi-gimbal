@@ -8,13 +8,14 @@
 GimbalControlThread::GimbalControlThread(
    PanTiltController& pan_tilt,
    Adxl345Controller& imu )
-   : pan_tilt_( pan_tilt )
+   : coral::thread::IThread("gimbal_control_thread")
+   , pan_tilt_( pan_tilt )
    , imu_( imu)
 {
 }
 
 //-----------------------------------------------------------------------------
-void PanTiltThread::run( const bool& shutdown )
+void GimbalControlThread::run( const bool& shutdown )
 {
    Adxl345Controller::AccelerationData vector;
 
