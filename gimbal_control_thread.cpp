@@ -30,7 +30,7 @@ void GimbalControlThread::run( const bool& shutdown )
 
       const auto end{std::chrono::steady_clock::now()};
       const std::chrono::duration<double> elapsed_seconds{end - start};
-      int16_t elapsed_ms = static_cast<int16_t>(elapsed_seconds * 1000.0);
+      int16_t elapsed_ms = std::chrono::milliseconds(elapsed_seconds).count();
 
       int32_t sleep_time_ms = kControlPeriodMs - elapsed_ms;
       if (sleep_time_ms < 0)
