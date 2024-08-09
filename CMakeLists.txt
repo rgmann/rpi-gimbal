@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.13)
 project( pan_tilt )
 
 if (POLICY CMP0015)
@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.47 REQUIRED system filesystem thread)
+find_package(Boost 1.47 REQUIRED system filesystem thread chrono)
 # add_definitions( "-Wno-unused-local-typedefs" )
 
 include_directories( ${Boost_INCLUDE_DIRS} )
@@ -45,4 +45,4 @@ add_executable(
 
 target_link_libraries( pan_tilt_util scanner_common )
 target_link_libraries( pan_tilt_util coral_core_shared )
-target_link_libraries( coral_core_shared ${Boost_LIBRARIES} )
+target_link_libraries( pan_tilt_util ${Boost_LIBRARIES} )
