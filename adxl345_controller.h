@@ -33,8 +33,8 @@ public:
 
 private:
 
-   PwmController( const PwmController& );
-   PwmController& operator= ( const PwmController& );
+   Adxl345Controller( const Adxl345Controller& );
+   Adxl345Controller& operator= ( const Adxl345Controller& );
 
 private:
 
