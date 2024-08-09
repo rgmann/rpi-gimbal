@@ -158,7 +158,7 @@ bool Adxl345Controller::read_acceleration_data(AccelerationData& data)
       std::vector<std::byte> buffer(kBufferSize, static_cast<std::byte>(0));
 
       uint32_t bytes_received = 0;
-      if ( i2c_->read(ADXL345_DATAX0, &buffer[0], buffer.size()) == I2cInterface::kSuccess)
+      if ( i2c_->read(ADXL345_DATAX0, &buffer[0], buffer.size(), bytes_received) == I2cInterface::kSuccess)
       {
          if ( bytes_rcvd == kBufferSize )
          {
