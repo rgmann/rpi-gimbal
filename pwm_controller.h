@@ -35,6 +35,7 @@
 
 #include <stdint.h>
 #include <cstddef>
+#include <memory>
 
 class I2cInterface;
 
@@ -43,7 +44,7 @@ public:
 
    static constexpr uint16_t kNumTicks = 4096;
    static constexpr uint16_t kDefaultAddress = 0x0040;
-   PwmController( I2cInterface* interface, uint16_t address = kDefaultAddress );
+   PwmController( std::shared_ptr<I2cInterface> interface, uint16_t address = kDefaultAddress );
 
    bool initialize();
 
@@ -61,7 +62,7 @@ private:
 
 private:
 
-   I2cInterface* i2c_;
+   std::shared_ptr<I2cInterface> i2c_;
 
    bool initialized_;
 

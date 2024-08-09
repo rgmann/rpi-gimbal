@@ -52,7 +52,7 @@ using namespace coral;
 std::shared_ptr<I2cInterface> I2cInterface::our_instance_;
 
 //-----------------------------------------------------------------------------
-I2cInterface::I2cInterface()
+I2cInterface::I2cInterface(I2cInterface::Private)
    : handle_( I2cInterface::kInvalidHandle )
    , capabilities_( 0 )
 {

@@ -67,7 +67,7 @@ using namespace coral;
 
 
 //-----------------------------------------------------------------------------
-PwmController::PwmController( I2cInterface* interface, uint16_t address )
+PwmController::PwmController( std::shared_ptr<I2cInterface> interface, uint16_t address )
    : i2c_( interface )
    , address_( address )
    , initialized_( false )

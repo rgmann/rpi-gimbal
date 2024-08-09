@@ -37,7 +37,7 @@
 #include <cstddef>
 #include <memory>
 
-class I2cInterface : public std::enable_shared_from_this<Best> {
+class I2cInterface : public std::enable_shared_from_this<I2cInterface> {
 private:
 
    struct Private{ explicit Private() = default; };
