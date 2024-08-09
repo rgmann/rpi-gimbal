@@ -2,6 +2,7 @@
 #include "Log.h"
 #include "pan_tilt_controller.h"
 #include "adxl345_controller.h"
+#include "gimbal_control_thread.h"
 
 //-----------------------------------------------------------------------------
 GimbalControlThread::GimbalControlThread(
