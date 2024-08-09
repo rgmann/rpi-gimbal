@@ -109,7 +109,7 @@ bool Adxl345Controller::initialize()
 
       // Wakeup
       uint8_t power_ctrl = 0;
-      if (i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != == I2cInterface::kSuccess)
+      if (i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to wakeup.\n");
@@ -117,7 +117,7 @@ bool Adxl345Controller::initialize()
 
       // Auto_Sleep
       power_ctrl = 16;
-      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != == I2cInterface::kSuccess)
+      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to set Auto_Sleep.\n");
@@ -125,7 +125,7 @@ bool Adxl345Controller::initialize()
 
       // Measure
       power_ctrl = 0;
-      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != == I2cInterface::kSuccess)
+      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to set Measure.\n");

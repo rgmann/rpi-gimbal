@@ -50,4 +50,4 @@ private:
 };
 
 
-#endif ADXL345_INTERFACE_H
+#endif // ADXL345_INTERFACE_H
