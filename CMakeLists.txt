@@ -37,7 +37,7 @@ add_library( scanner_common STATIC
    pwm_controller.cpp
    pan_tilt_controller.cpp
    adxl345_controller.cpp
-   gimbal_controller_thread.cpp )
+   gimbal_control_thread.cpp )
 
 add_executable(
    pan_tilt_util

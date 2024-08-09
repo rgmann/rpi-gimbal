@@ -69,7 +69,7 @@ std::shared_ptr<I2cInterface> I2cInterface::instance( const char* device_path )
 {
    if ( !our_instance_ )
    {
-      our_instance_ = std::make_shared<I2cInterface>();
+      our_instance_ = std::make_shared<I2cInterface>(Private());
 
       if ( device_path )
       {
