@@ -84,7 +84,7 @@ bool PwmController::initialize()
    {
       uint8_t mode2 = PWMC_OUTDRV;
 
-      if ( i2c_->write(
+      if ( i2c_.write(
          PWMC_REG_MODE2,
          &mode2,
          sizeof( mode2 )
@@ -92,7 +92,7 @@ bool PwmController::initialize()
       {
          uint8_t mode1 = PWMC_ALLCALL;
 
-         if ( i2c_->write(
+         if ( i2c_.write(
             PWMC_REG_MODE1,
             &mode1,
             sizeof( mode1 )
@@ -104,7 +104,7 @@ bool PwmController::initialize()
             uint8_t current_mode = 0;
             size_t bytes_rcvd = 0;
 
-            if ( ( i2c_->read(
+            if ( ( i2c_.read(
                   PWMC_REG_MODE1,
                   &current_mode,
                   sizeof( current_mode ),
@@ -117,7 +117,7 @@ bool PwmController::initialize()
                // Wake the device by clearing the sleep bit.
                current_mode &= ~PWMC_SLEEP;
 
-               if ( i2c_->write(
+               if ( i2c_.write(
                   PWMC_REG_MODE1,
                   &current_mode,
                   sizeof( current_mode )
@@ -162,7 +162,7 @@ bool PwmController::set_frequency( uint16_t frequency )
 
    if ( i2c_ && initialized_ )
    {
-      if ( i2c_->acquire( address_ ) == I2cInterface::kSuccess )
+      if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
       {
          double prescale_value = ( PWMC_25MHZ / 4096.0 ) / (double)frequency;
          prescale_value -= 1.0;
@@ -172,14 +172,14 @@ bool PwmController::set_frequency( uint16_t frequency )
          size_t bytes_rcvd = 0;
          uint8_t orignal_mode = 0;
 
-         if ( i2c_->read( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ), bytes_rcvd ) == I2cInterface::kSuccess )
+         if ( i2c_.read( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ), bytes_rcvd ) == I2cInterface::kSuccess )
          {
             uint8_t new_mode = ( orignal_mode & 0x7F ) | PWMC_SLEEP;
             log::status("CURRENT MODE = 0x%02X, new_mode=%02X\n", orignal_mode, new_mode);
 
-            if ( i2c_->write( PWMC_REG_MODE1, &new_mode, sizeof( new_mode ) ) == I2cInterface::kSuccess )
+            if ( i2c_.write( PWMC_REG_MODE1, &new_mode, sizeof( new_mode ) ) == I2cInterface::kSuccess )
             {
-               if ( i2c_->write( PWMC_REG_PRESCALE, &prescale, sizeof( prescale ) ) != I2cInterface::kSuccess )
+               if ( i2c_.write( PWMC_REG_PRESCALE, &prescale, sizeof( prescale ) ) != I2cInterface::kSuccess )
                {
                   log::error("PwmController::set_frequency: Failed to set prescale of %u.\n", prescale);
                   success = false;
@@ -187,13 +187,13 @@ bool PwmController::set_frequency( uint16_t frequency )
 
                // Regardless of whether the prescaler was successfully set, return
                // to the old mode.
-               if ( i2c_->write( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ) ) == I2cInterface::kSuccess )
+               if ( i2c_.write( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ) ) == I2cInterface::kSuccess )
                {
                   // TODO: Sleep 5 ms
                   boost::this_thread::sleep(boost::posix_time::milliseconds(5));
 
                   orignal_mode |= 0x80;
-                  if ( i2c_->write( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ) ) == I2cInterface::kSuccess )
+                  if ( i2c_.write( PWMC_REG_MODE1, &orignal_mode, sizeof( orignal_mode ) ) == I2cInterface::kSuccess )
                   {
                      frequency_hz_ = (int32_t)frequency;
                      success = true;
@@ -245,11 +245,11 @@ bool PwmController::set_pwm( size_t channel, uint16_t on_ticks, uint16_t off_tic
 
    if ( i2c_ && initialized_ )
    {
-      if ( i2c_->acquire( address_ ) == I2cInterface::kSuccess )
+      if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
       {
          uint8_t on_ticks_lower = on_ticks & 0xFF;
 
-         if ( i2c_->write(
+         if ( i2c_.write(
             PWMC_REG_LED0_ON_L + 4 * channel,
             &on_ticks_lower,
             sizeof( on_ticks_lower )
@@ -257,7 +257,7 @@ bool PwmController::set_pwm( size_t channel, uint16_t on_ticks, uint16_t off_tic
          {
             uint8_t on_ticks_upper = on_ticks >> 8;
 
-            if ( i2c_->write(
+            if ( i2c_.write(
                PWMC_REG_LED0_ON_H + 4 * channel,
                &on_ticks_upper,
                sizeof( on_ticks_upper )
@@ -265,7 +265,7 @@ bool PwmController::set_pwm( size_t channel, uint16_t on_ticks, uint16_t off_tic
             {
                uint8_t off_ticks_lower = off_ticks & 0xFF;
 
-               if ( i2c_->write(
+               if ( i2c_.write(
                   PWMC_REG_LED0_OFF_L + 4 * channel,
                   &off_ticks_lower,
                   sizeof( off_ticks_lower )
@@ -273,7 +273,7 @@ bool PwmController::set_pwm( size_t channel, uint16_t on_ticks, uint16_t off_tic
                {
                   uint8_t off_ticks_upper = off_ticks >> 8;
 
-                  if ( i2c_->write(
+                  if ( i2c_.write(
                      PWMC_REG_LED0_OFF_H + 4 * channel,
                      &off_ticks_upper,
                      sizeof( off_ticks_upper )
@@ -322,11 +322,11 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
 
    if ( i2c_ )
    {
-      if ( i2c_->acquire( address_ ) == I2cInterface::kSuccess )
+      if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
       {
          uint8_t on_ticks_lower = on_ticks & 0xFF;
 
-         if ( i2c_->write(
+         if ( i2c_.write(
             PWMC_REG_ALL_LED_ON_L,
             &on_ticks_lower,
             sizeof( on_ticks_lower )
@@ -334,7 +334,7 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
          {
             uint8_t on_ticks_upper = on_ticks >> 8;
 
-            if ( i2c_->write(
+            if ( i2c_.write(
                PWMC_REG_ALL_LED_ON_H,
                &on_ticks_upper,
                sizeof( on_ticks_upper )
@@ -342,7 +342,7 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
             {
                uint8_t off_ticks_lower = off_ticks & 0xFF;
 
-               if ( i2c_->write(
+               if ( i2c_.write(
                   PWMC_REG_ALL_LED_OFF_L,
                   &off_ticks_lower,
                   sizeof( off_ticks_lower )
@@ -350,7 +350,7 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
                {
                   uint8_t off_ticks_upper = off_ticks >> 8;
 
-                  if ( i2c_->write(
+                  if ( i2c_.write(
                      PWMC_REG_ALL_LED_OFF_H,
                      &off_ticks_upper,
                      sizeof( off_ticks_upper )

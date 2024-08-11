@@ -49,8 +49,6 @@
 
 using namespace coral;
 
-std::shared_ptr<I2cInterface> I2cInterface::our_instance_;
-
 //-----------------------------------------------------------------------------
 I2cInterface::I2cInterface(I2cInterface::Private)
    : handle_( I2cInterface::kInvalidHandle )
@@ -65,19 +63,16 @@ I2cInterface::~I2cInterface()
 }
 
 //-----------------------------------------------------------------------------
-std::shared_ptr<I2cInterface> I2cInterface::instance( const char* device_path )
+I2cInterface& I2cInterface::instance( const char* device_path )
 {
-   if ( !our_instance_ )
-   {
-      our_instance_ = std::make_shared<I2cInterface>(Private());
+   static I2cInterface our_instance;
 
-      if ( device_path )
-      {
-         our_instance_->open( device_path );
-      }
+   if ( ( our_instance.handle_ == I2cInterface::kInvalidHandle ) && device_path )
+   {
+      our_instance_->open( device_path );
    }
 
-   return our_instance_;
+   return our_instance;
 }
 
 //-----------------------------------------------------------------------------

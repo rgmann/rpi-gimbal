@@ -151,7 +151,7 @@ int main( int argc, char** argv )
 {
    coral::log::level( coral::log::Verbose );
 
-   std::shared_ptr<I2cInterface> i2c = I2cInterface::instance( "/dev/i2c-1" );
+   I2cInterface& i2c = I2cInterface::instance( "/dev/i2c-1" );
 
    if ( i2c )
    {

@@ -103,13 +103,13 @@ Adxl345Controller::Adxl345Controller(std::shared_ptr<I2cInterface> i2c, uint16_t
 bool Adxl345Controller::initialize()
 {
    bool success = false;
-   if ( i2c_->acquire( address_ ) == I2cInterface::kSuccess )
+   if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
    {
       success = true;
 
       // Wakeup
       uint8_t power_ctrl = 0;
-      if (i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
+      if (i2c_.write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to wakeup.\n");
@@ -117,7 +117,7 @@ bool Adxl345Controller::initialize()
 
       // Auto_Sleep
       power_ctrl = 16;
-      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
+      if (success && i2c_.write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to set Auto_Sleep.\n");
@@ -125,7 +125,7 @@ bool Adxl345Controller::initialize()
 
       // Measure
       power_ctrl = 0;
-      if (success && i2c_->write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
+      if (success && i2c_.write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
          coral::log::error("Adxl345Controller::initialize: Failed attempting to set Measure.\n");
@@ -152,13 +152,13 @@ bool Adxl345Controller::read_acceleration_data(AccelerationData& data)
       return false;
    }
 
-   if ( i2c_->acquire( address_ ) == I2cInterface::kSuccess )
+   if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
    {
       static constexpr uint32_t kBufferSize = 6;
       std::vector<uint8_t> buffer(kBufferSize, static_cast<uint8_t>(0));
 
       size_t bytes_received = 0;
-      if ( i2c_->read(ADXL345_DATAX0, &buffer[0], buffer.size(), bytes_received) == I2cInterface::kSuccess)
+      if ( i2c_.read(ADXL345_DATAX0, &buffer[0], buffer.size(), bytes_received) == I2cInterface::kSuccess)
       {
          if ( bytes_received == kBufferSize )
          {

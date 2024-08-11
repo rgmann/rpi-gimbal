@@ -35,9 +35,8 @@
 
 #include <stdint.h>
 #include <cstddef>
-#include <memory>
 
-class I2cInterface : public std::enable_shared_from_this<I2cInterface> {
+class I2cInterface {
 private:
 
    struct Private{ explicit Private() = default; };
@@ -66,7 +65,7 @@ public:
    ///
    /// @return I2cInterface*  Pointer to I2C interface instance
    ///
-   static std::shared_ptr<I2cInterface> instance( const char* device_path = NULL );
+   static I2cInterface& instance( const char* device_path = NULL );
 
    ///
    /// Open the I2C interface
@@ -105,8 +104,6 @@ private:
    int handle_;
 
    uint32_t capabilities_;
-
-   static std::shared_ptr<I2cInterface>  our_instance_;
 };
 
 #endif // I2C_INTERFACE_H

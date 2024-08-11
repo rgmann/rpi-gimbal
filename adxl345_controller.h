@@ -12,7 +12,7 @@ public:
 
    static constexpr uint16_t kDeviceAddress = 0x53;
 
-   Adxl345Controller( std::shared_ptr<I2cInterface>, uint16_t address = kDeviceAddress );
+   Adxl345Controller( I2cInterface&, uint16_t address = kDeviceAddress );
 
    bool initialize();
 
@@ -38,7 +38,7 @@ private:
 
 private:
 
-   std::shared_ptr<I2cInterface> i2c_;
+   I2cInterface& i2c_;
 
    bool initialized_;
 
