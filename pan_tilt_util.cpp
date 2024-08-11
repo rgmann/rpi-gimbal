@@ -153,50 +153,43 @@ int main( int argc, char** argv )
 
    I2cInterface& i2c = I2cInterface::instance( "/dev/i2c-1" );
 
-   if ( i2c )
+   PwmController     pwm( i2c );
+   Adxl345Controller imu( i2c );
+   // Ads1115Interface adc( i2c );
+
+   if ( pwm.initialize() )
    {
-      PwmController     pwm( i2c );
-      Adxl345Controller imu( i2c );
-      // Ads1115Interface adc( i2c );
+      bool init_success = true;
 
-      if ( pwm.initialize() )
+      if ( pwm.set_frequency( PWM_FREQ_HZ ) == false )
       {
-         bool init_success = true;
+         log::error("Failed to configure PWM frequency.\n");
+         init_success = false;
+      }
 
-         if ( pwm.set_frequency( PWM_FREQ_HZ ) == false )
-         {
-            log::error("Failed to configure PWM frequency.\n");
-            init_success = false;
-         }
+      if ( init_success )
+      {
+         PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
 
-         if ( init_success )
-         {
-            PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
+         InteractiveCommandRouter router;
 
-            InteractiveCommandRouter router;
-
-            router.add( std::make_shared<PanCommand>(pan_tilt) );
-            router.add( std::make_shared<TiltCommand>(pan_tilt) );
-            router.add( std::make_shared<PointCommand>(pan_tilt) );
-            router.add( std::make_shared<GetPointCommand>(pan_tilt) );
-            router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
-            router.add( std::make_shared<ReadImuCommand>(imu) );
-            
-            router.run();
-         }
-         else
-         {
-            log::error("Failed to set PWM frequency.\n");
-         }
+         router.add( std::make_shared<PanCommand>(pan_tilt) );
+         router.add( std::make_shared<TiltCommand>(pan_tilt) );
+         router.add( std::make_shared<PointCommand>(pan_tilt) );
+         router.add( std::make_shared<GetPointCommand>(pan_tilt) );
+         router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
+         router.add( std::make_shared<ReadImuCommand>(imu) );
+         
+         router.run();
       }
       else
       {
-         log::error("Failed to initialize PWM controller.\n");
+         log::error("Failed to set PWM frequency.\n");
       }
    }
    else
    {
-      log::error("Failed to open I2C interface.\n");
+      log::error("Failed to initialize PWM controller.\n");
    }
 
    log::flush();
