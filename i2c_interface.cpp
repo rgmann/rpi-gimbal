@@ -69,7 +69,7 @@ I2cInterface& I2cInterface::instance( const char* device_path )
 
    if ( ( our_instance.handle_ == I2cInterface::kInvalidHandle ) && device_path )
    {
-      our_instance_.open( device_path );
+      our_instance.open( device_path );
    }
 
    return our_instance;
