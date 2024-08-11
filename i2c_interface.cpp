@@ -50,7 +50,7 @@
 using namespace coral;
 
 //-----------------------------------------------------------------------------
-I2cInterface::I2cInterface(I2cInterface::Private)
+I2cInterface::I2cInterface()
    : handle_( I2cInterface::kInvalidHandle )
    , capabilities_( 0 )
 {

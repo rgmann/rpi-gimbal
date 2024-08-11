@@ -37,13 +37,7 @@
 #include <cstddef>
 
 class I2cInterface {
-private:
-
-   struct Private{ explicit Private() = default; };
-
 public:
-
-   I2cInterface(Private);
 
    enum i2c_error {
       kSuccess,
@@ -94,6 +88,7 @@ public:
 
 private:
 
+   I2cInterface();
    I2cInterface( const I2cInterface& ) {};
    I2cInterface& operator= ( const I2cInterface& ) {};
 
