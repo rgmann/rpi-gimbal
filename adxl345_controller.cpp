@@ -88,7 +88,7 @@
 #define ADXL345_BAD_ARG		2		// Bad Argument
 
 //-----------------------------------------------------------------------------
-Adxl345Controller::Adxl345Controller(std::shared_ptr<I2cInterface> i2c, uint16_t address)
+Adxl345Controller::Adxl345Controller(I2cInterface& i2c, uint16_t address)
    : i2c_( i2c )
    , initialized_( false )
    , address_( address )

@@ -67,7 +67,7 @@ using namespace coral;
 
 
 //-----------------------------------------------------------------------------
-PwmController::PwmController( std::shared_ptr<I2cInterface> interface, uint16_t address )
+PwmController::PwmController( I2cInterface& interface, uint16_t address )
    : i2c_( interface )
    , address_( address )
    , initialized_( false )
@@ -160,7 +160,7 @@ bool PwmController::set_frequency( uint16_t frequency )
 {
    bool success = false;
 
-   if ( i2c_ && initialized_ )
+   if ( initialized_ )
    {
       if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
       {
@@ -243,7 +243,7 @@ bool PwmController::set_pwm( size_t channel, uint16_t on_ticks, uint16_t off_tic
 {
    bool success = false;
 
-   if ( i2c_ && initialized_ )
+   if ( initialized_ )
    {
       if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
       {
@@ -320,49 +320,41 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
 {
    bool success = false;
 
-   if ( i2c_ )
+   if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
    {
-      if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
+      uint8_t on_ticks_lower = on_ticks & 0xFF;
+
+      if ( i2c_.write(
+         PWMC_REG_ALL_LED_ON_L,
+         &on_ticks_lower,
+         sizeof( on_ticks_lower )
+      ) == I2cInterface::kSuccess )
       {
-         uint8_t on_ticks_lower = on_ticks & 0xFF;
+         uint8_t on_ticks_upper = on_ticks >> 8;
 
          if ( i2c_.write(
-            PWMC_REG_ALL_LED_ON_L,
-            &on_ticks_lower,
-            sizeof( on_ticks_lower )
+            PWMC_REG_ALL_LED_ON_H,
+            &on_ticks_upper,
+            sizeof( on_ticks_upper )
          ) == I2cInterface::kSuccess )
          {
-            uint8_t on_ticks_upper = on_ticks >> 8;
+            uint8_t off_ticks_lower = off_ticks & 0xFF;
 
             if ( i2c_.write(
-               PWMC_REG_ALL_LED_ON_H,
-               &on_ticks_upper,
-               sizeof( on_ticks_upper )
+               PWMC_REG_ALL_LED_OFF_L,
+               &off_ticks_lower,
+               sizeof( off_ticks_lower )
             ) == I2cInterface::kSuccess )
             {
-               uint8_t off_ticks_lower = off_ticks & 0xFF;
+               uint8_t off_ticks_upper = off_ticks >> 8;
 
                if ( i2c_.write(
-                  PWMC_REG_ALL_LED_OFF_L,
-                  &off_ticks_lower,
-                  sizeof( off_ticks_lower )
+                  PWMC_REG_ALL_LED_OFF_H,
+                  &off_ticks_upper,
+                  sizeof( off_ticks_upper )
                ) == I2cInterface::kSuccess )
                {
-                  uint8_t off_ticks_upper = off_ticks >> 8;
-
-                  if ( i2c_.write(
-                     PWMC_REG_ALL_LED_OFF_H,
-                     &off_ticks_upper,
-                     sizeof( off_ticks_upper )
-                  ) == I2cInterface::kSuccess )
-                  {
-                     success = true;
-                  }
-                  else
-                  {
-                     log::error("PwmController::set_all_pwm: ERROR at %d\n",__LINE__);
-                     success = false;
-                  }
+                  success = true;
                }
                else
                {
@@ -387,6 +379,11 @@ bool PwmController::set_all_pwm( uint16_t on_ticks, uint16_t off_ticks )
          log::error("PwmController::set_all_pwm: ERROR at %d\n",__LINE__);
          success = false;
       }
+   }
+   else
+   {
+      log::error("PwmController::set_all_pwm: ERROR at %d\n",__LINE__);
+      success = false;
    }
 
    return success;
