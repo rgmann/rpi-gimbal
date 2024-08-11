@@ -8,7 +8,7 @@
 #include "i2c_interface.h"
 #include "pwm_controller.h"
 #include "pan_tilt_controller.h"
-// #include "pan_tilt_thread.h"
+#include "adxl345_controller.h"
 
 using namespace coral;
 using namespace coral::cli;
@@ -109,6 +109,31 @@ private:
    PanTiltController& pan_tilt_;
 };
 
+class ReadImuCommand : public InteractiveCommand {
+public:
+
+   ReadImuCommand( Adxl345Controller& imu )
+      : InteractiveCommand( "imu", "Read IMU" )
+      , imu_( imu ) {};
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      Adxl345Controller::AccelerationData vector;
+      if ( imu_.read_acceleration_data(vector) )
+      {
+         coral::log::status("X=%d, Y=%d, Z=%d", vector.x, vector.y, vector.z);
+      }
+      else
+      {
+         coral::log::error("ERROR reading from IMU");
+      }
+   }
+
+private:
+
+   Adxl345Controller& imu_;
+};
+
 
 // class PointCallback : public PanTiltThread::MeasurementCallback {
 // public:
@@ -130,7 +155,8 @@ int main( int argc, char** argv )
 
    if ( i2c )
    {
-      PwmController    pwm( i2c );
+      PwmController     pwm( i2c );
+      Adxl345Controller imu( i2c );
       // Ads1115Interface adc( i2c );
 
       if ( pwm.initialize() )
@@ -154,6 +180,7 @@ int main( int argc, char** argv )
             router.add( std::make_shared<PointCommand>(pan_tilt) );
             router.add( std::make_shared<GetPointCommand>(pan_tilt) );
             router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
+            router.add( std::make_shared<ReadImuCommand>(imu) );
             
             router.run();
          }
