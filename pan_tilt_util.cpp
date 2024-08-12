@@ -155,36 +155,38 @@ int main( int argc, char** argv )
 
    PwmController     pwm( i2c );
    Adxl345Controller imu( i2c );
-   // Ads1115Interface adc( i2c );
 
    if ( pwm.initialize() )
    {
-      bool init_success = true;
-
-      if ( pwm.set_frequency( PWM_FREQ_HZ ) == false )
+      if ( imu.initialize() )
       {
-         log::error("Failed to configure PWM frequency.\n");
-         init_success = false;
-      }
+         bool init_success = true;
 
-      if ( init_success )
-      {
-         PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
+         if ( pwm.set_frequency( PWM_FREQ_HZ ) == false )
+         {
+            log::error("Failed to configure PWM frequency.\n");
+            init_success = false;
+         }
 
-         InteractiveCommandRouter router;
+         if ( init_success )
+         {
+            PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
 
-         router.add( std::make_shared<PanCommand>(pan_tilt) );
-         router.add( std::make_shared<TiltCommand>(pan_tilt) );
-         router.add( std::make_shared<PointCommand>(pan_tilt) );
-         router.add( std::make_shared<GetPointCommand>(pan_tilt) );
-         router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
-         router.add( std::make_shared<ReadImuCommand>(imu) );
-         
-         router.run();
-      }
-      else
-      {
-         log::error("Failed to set PWM frequency.\n");
+            InteractiveCommandRouter router;
+
+            router.add( std::make_shared<PanCommand>(pan_tilt) );
+            router.add( std::make_shared<TiltCommand>(pan_tilt) );
+            router.add( std::make_shared<PointCommand>(pan_tilt) );
+            router.add( std::make_shared<GetPointCommand>(pan_tilt) );
+            router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
+            router.add( std::make_shared<ReadImuCommand>(imu) );
+            
+            router.run();
+         }
+         else
+         {
+            log::error("Initialization failed.\n");
+         }
       }
    }
    else
