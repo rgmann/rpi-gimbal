@@ -188,6 +188,10 @@ int main( int argc, char** argv )
             log::error("Initialization failed.\n");
          }
       }
+      else
+      {
+         log::error("Failed to initialize IMU.\n");
+      }
    }
    else
    {
