@@ -121,7 +121,7 @@ public:
       Adxl345Controller::AccelerationData vector;
       if ( imu_.read_acceleration_data(vector) )
       {
-         coral::log::status("X=%d, Y=%d, Z=%d", vector.x, vector.y, vector.z);
+         coral::log::status("X=%d, Y=%d, Z=%d\n", vector.x, vector.y, vector.z);
       }
       else
       {
@@ -158,7 +158,7 @@ int main( int argc, char** argv )
 
    if ( pwm.initialize() )
    {
-      if ( imu.initialize() )
+      if ( imu.initialize() && imu.set_range_setting(Adxl345Controller::kRange2g) )
       {
          bool init_success = true;
 

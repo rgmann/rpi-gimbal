@@ -116,7 +116,7 @@ bool Adxl345Controller::initialize()
       }
 
       // Auto_Sleep
-      power_ctrl = 16;
+      power_ctrl = 0x10;
       if (success && i2c_.write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
@@ -124,7 +124,7 @@ bool Adxl345Controller::initialize()
       }
 
       // Measure
-      power_ctrl = 0;
+      power_ctrl = 0x08;
       if (success && i2c_.write(ADXL345_POWER_CTL, &power_ctrl, sizeof(power_ctrl)) != I2cInterface::kSuccess)
       {
          success = false;
@@ -139,6 +139,60 @@ bool Adxl345Controller::initialize()
    }
 
    return success;
+}
+
+//-----------------------------------------------------------------------------
+bool Adxl345Controller::set_range_setting(Adxl345Controller::RangeSetting setting)
+{
+   uint8_t temp = 0;
+   uint8_t new_setting = 0;
+   bool success = false;
+
+   if ( setting == Adxl345Controller::kRange2g )
+   {
+      new_setting = B00000000;
+   }
+   else if ( setting == Adxl345Controller::kRange4g )
+   {
+      new_setting = B00000001;
+   }
+   else if ( setting == Adxl345Controller::kRange8g )
+   {
+      new_setting = B00000010;
+   }
+   else if ( setting == Adxl345Controller::kRange16g )
+   {
+      new_setting = B00000011;
+   }
+   else
+   {
+      coral::log::error("Adxl345Controller::set_range_setting: Invalid setting.\n");
+      return false;
+   }
+
+   if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
+   {
+      success = true;
+
+      if ( i2c_.read(ADXL345_DATA_FORMAT, 1, &temp) != I2cInterface::kSuccess )
+      {
+         coral::log::error("Adxl345Controller::set_range_setting: Error reading ADXL345_DATA_FORMAT setting.\n");
+         success = false;
+      }
+      new_setting |= (temp & B11101100);
+
+      if ( success && i2c_.write(ADXL345_DATA_FORMAT, _s)  != I2cInterface::kSuccess )
+      {
+         coral::log::error("Adxl345Controller::set_range_setting: Error writing ADXL345_DATA_FORMAT setting.\n");
+         success = false;
+      }
+   }
+   else
+   {
+      coral::log::error("Adxl345Controller::read_acceleration_data: Failed to acquire bus.\n");
+   }
+
+   return success
 }
 
 //-----------------------------------------------------------------------------
