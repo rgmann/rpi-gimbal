@@ -172,16 +172,17 @@ bool Adxl345Controller::set_range_setting(RangeSetting setting)
 
    if ( i2c_.acquire( address_ ) == I2cInterface::kSuccess )
    {
+      size_t bytes_rcvd = 0;
       success = true;
 
-      if ( i2c_.read(ADXL345_DATA_FORMAT, &temp, sizeof(temp)) != I2cInterface::kSuccess )
+      if ( i2c_.read(ADXL345_DATA_FORMAT, &temp, sizeof(temp), bytes_rcvd) != I2cInterface::kSuccess )
       {
          coral::log::error("Adxl345Controller::set_range_setting: Error reading ADXL345_DATA_FORMAT setting.\n");
          success = false;
       }
       new_setting |= (temp & 0xEC);
 
-      if ( success && i2c_.write(ADXL345_DATA_FORMAT, &new_setting, sizeof(new_setting))  != I2cInterface::kSuccess )
+      if ( success && i2c_.write(ADXL345_DATA_FORMAT, &new_setting, sizeof(new_setting), bytes_rcvd)  != I2cInterface::kSuccess )
       {
          coral::log::error("Adxl345Controller::set_range_setting: Error writing ADXL345_DATA_FORMAT setting.\n");
          success = false;
@@ -192,7 +193,7 @@ bool Adxl345Controller::set_range_setting(RangeSetting setting)
       coral::log::error("Adxl345Controller::read_acceleration_data: Failed to acquire bus.\n");
    }
 
-   return success
+   return success;
 }
 
 //-----------------------------------------------------------------------------
