@@ -182,7 +182,7 @@ bool Adxl345Controller::set_range_setting(RangeSetting setting)
       }
       new_setting |= (temp & 0xEC);
 
-      if ( success && i2c_.write(ADXL345_DATA_FORMAT, &new_setting, sizeof(new_setting), bytes_rcvd)  != I2cInterface::kSuccess )
+      if ( success && i2c_.write(ADXL345_DATA_FORMAT, &new_setting, sizeof(new_setting))  != I2cInterface::kSuccess )
       {
          coral::log::error("Adxl345Controller::set_range_setting: Error writing ADXL345_DATA_FORMAT setting.\n");
          success = false;
