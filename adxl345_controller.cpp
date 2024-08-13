@@ -150,19 +150,19 @@ bool Adxl345Controller::set_range_setting(RangeSetting setting)
 
    if ( setting == Adxl345Controller::kRange2g )
    {
-      new_setting = B00000000;
+      new_setting = 0x00;
    }
    else if ( setting == Adxl345Controller::kRange4g )
    {
-      new_setting = B00000001;
+      new_setting = 0x01;
    }
    else if ( setting == Adxl345Controller::kRange8g )
    {
-      new_setting = B00000010;
+      new_setting = 0x02;
    }
    else if ( setting == Adxl345Controller::kRange16g )
    {
-      new_setting = B00000011;
+      new_setting = 0x03;
    }
    else
    {
@@ -174,14 +174,14 @@ bool Adxl345Controller::set_range_setting(RangeSetting setting)
    {
       success = true;
 
-      if ( i2c_.read(ADXL345_DATA_FORMAT, 1, &temp) != I2cInterface::kSuccess )
+      if ( i2c_.read(ADXL345_DATA_FORMAT, &temp, sizeof(temp)) != I2cInterface::kSuccess )
       {
          coral::log::error("Adxl345Controller::set_range_setting: Error reading ADXL345_DATA_FORMAT setting.\n");
          success = false;
       }
-      new_setting |= (temp & B11101100);
+      new_setting |= (temp & 0xEC);
 
-      if ( success && i2c_.write(ADXL345_DATA_FORMAT, _s)  != I2cInterface::kSuccess )
+      if ( success && i2c_.write(ADXL345_DATA_FORMAT, &new_setting, sizeof(new_setting))  != I2cInterface::kSuccess )
       {
          coral::log::error("Adxl345Controller::set_range_setting: Error writing ADXL345_DATA_FORMAT setting.\n");
          success = false;
