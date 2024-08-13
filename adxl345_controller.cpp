@@ -142,7 +142,7 @@ bool Adxl345Controller::initialize()
 }
 
 //-----------------------------------------------------------------------------
-bool Adxl345Controller::set_range_setting(Adxl345Controller::RangeSetting setting)
+bool Adxl345Controller::set_range_setting(RangeSetting setting)
 {
    uint8_t temp = 0;
    uint8_t new_setting = 0;

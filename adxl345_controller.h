@@ -23,6 +23,14 @@ public:
       NumAxis
    };
 
+   enum RangeSetting {
+      kRange2g,
+      kRange4g,
+      kRange8g,
+      kRange16g
+   };
+   bool set_range_setting(RangeSetting setting);
+
    struct AccelerationData {
       int16_t x;
       int16_t y;
