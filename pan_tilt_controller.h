@@ -58,14 +58,14 @@ public:
    void set_limit_phi_min(float rad);
    void set_limit_phi_max(float rad);
 
-   float get_limits_phi_min() const;
-   float get_limits_phi_max() const;
+   float get_limit_phi_min() const;
+   float get_limit_phi_max() const;
 
    void set_limit_theta_min(float rad);
    void set_limit_theta_max(float rad);
 
-   float get_limits_theta_min() const;
-   float get_limits_theta_max() const;
+   float get_limit_theta_min() const;
+   float get_limit_theta_max() const;
 
    bool all_limits_set() const;
 

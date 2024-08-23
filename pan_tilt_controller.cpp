@@ -237,31 +237,31 @@ float PanTiltController::get_theta() const
 }
 
 //-----------------------------------------------------------------------------
-void PanTiltController::set_limit_phi_phi(float min_rad)
+void PanTiltController::set_limit_phi_min(float min_rad)
 {
-   limit_phi_min_ = std::tuple<float, bool>{min_rad, true};
+   limit_phi_min_rad_ = std::tuple<float, bool>{min_rad, true};
 }
 
 //-----------------------------------------------------------------------------
 void PanTiltController::set_limit_phi_max(float max_rad)
 {
-   limit_phi_max_ = std::tuple<float, bool>{max_rad, true};
+   limit_phi_max_rad_ = std::tuple<float, bool>{max_rad, true};
 }
 
 //-----------------------------------------------------------------------------
 void PanTiltController::set_limit_theta_min(float min_rad)
 {
-   limit_theta_min_ = std::tuple<float, bool>{min_rad, true};
+   limit_theta_min_rad_ = std::tuple<float, bool>{min_rad, true};
 }
 
 //-----------------------------------------------------------------------------
 void PanTiltController::set_limit_theta_max(float max_rad)
 {
-   limit_theta_max_ = std::tuple<float, bool>{max_rad, true};
+   limit_theta_max_rad_ = std::tuple<float, bool>{max_rad, true};
 }
 
 //-----------------------------------------------------------------------------
-float PanTiltController::get_phi_min() const
+float PanTiltController::get_limit_phi_min() const
 {
    using std::get;
 
@@ -269,26 +269,20 @@ float PanTiltController::get_phi_min() const
 }
 
 //-----------------------------------------------------------------------------
-float PanTiltController::get_phi_max() const
+float PanTiltController::get_limit_phi_max() const
 {
-   using std::get;
-
    return std::get<0>(limit_phi_max_rad_);
 }
 
 //-----------------------------------------------------------------------------
-float PanTiltController::get_theta_min() const
+float PanTiltController::get_limit_theta_min() const
 {
-   using std::get;
-
    return std::get<0>(limit_theta_min_rad_);
 }
 
 //-----------------------------------------------------------------------------
-float PanTiltController::get_theta_max() const
+float PanTiltController::get_limit_theta_max() const
 {
-   using std::get;
-
    return std::get<0>(limit_theta_max_rad_);
 }
 
