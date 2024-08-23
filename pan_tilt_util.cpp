@@ -195,7 +195,7 @@ public:
                {
                   control_.set_limit_y_min(vector.y);
                }
-               else if ( limit_specifier === "y_max" )
+               else if ( limit_specifier == "y_max" )
                {
                   control_.set_limit_y_max(vector.y);
                }
@@ -223,7 +223,7 @@ public:
 
    TrackCommand( GimbalControlThread& control )
       : InteractiveCommand( "track", "Enable/disable tracking" )
-      , control_( state )
+      , control_( control )
       {}
 
    void process( const coral::cli::ArgumentList& args )
@@ -373,7 +373,7 @@ public:
 private:
 
    GimbalControlThread& control_;
-   PanTiltController& pan_tilt_;
+   PanTiltController&   pan_tilt_;
 };
 
 class StoreLimitsCommand : public InteractiveCommand {
