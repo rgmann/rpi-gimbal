@@ -178,7 +178,7 @@ public:
       }
       else
       {
-         const std::string& limit_specifier = args[1];
+         const std::string& limit_specifier = args[0];
 
          if ( valid_limit_specifier(limit_specifier) )
          {
@@ -203,12 +203,12 @@ public:
             }
             else
             {
-               coral::log::error("ERROR reading from IMU");
+               coral::log::error("ERROR reading from IMU.\n");
             }
          }
          else
          {
-            coral::log::error("Invalid limit specifier. Expecting <x_min,x_max,y_min,y_max>\n.");
+            coral::log::error("Invalid limit specifier. Expecting <x_min,x_max,y_min,y_max>.\n");
          }
       }
    }
