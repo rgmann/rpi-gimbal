@@ -4,6 +4,7 @@
 #include <sstream>
 #include "Log.h"
 #include "InteractiveCommandRouter.h"
+#include "StringHelper.h"
 
 #include "i2c_interface.h"
 #include "pwm_controller.h"
@@ -26,7 +27,7 @@ float rad_to_deg(float rad)
 
 float deg_to_rad(float deg)
 {
-return (deg * 3.14159) / 180.0;
+   return (deg * 3.14159) / 180.0;
 }
 
 
@@ -397,11 +398,11 @@ public:
          file_stream << "imu_lim_y_min " << control_.get_limit_y_min() << std::endl;
          file_stream << "imu_lim_y_max " << control_.get_limit_y_max() << std::endl;
 
-         file_stream << "gimbal_lim_phi_min " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_phi_min()) << std::endl;
-         file_stream << "gimbal_lim_phi_max " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_phi_max()) << std::endl;
+         file_stream << "gimbal_lim_phi_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_phi_min())) << std::endl;
+         file_stream << "gimbal_lim_phi_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_phi_max())) << std::endl;
 
-         file_stream << "gimbal_lim_theta_min " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_theta_min()) << std::endl;
-         file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_theta_max()) << std::endl;
+         file_stream << "gimbal_lim_theta_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_theta_min())) << std::endl;
+         file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_theta_max())) << std::endl;
 
          file_stream << "gimbal_speed " << pan_tilt_.get_speed() << std::endl;
 
