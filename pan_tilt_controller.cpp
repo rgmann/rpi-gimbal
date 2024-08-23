@@ -263,8 +263,6 @@ void PanTiltController::set_limit_theta_max(float max_rad)
 //-----------------------------------------------------------------------------
 float PanTiltController::get_limit_phi_min() const
 {
-   using std::get;
-
    return std::get<0>(limit_phi_min_rad_);
 }
 

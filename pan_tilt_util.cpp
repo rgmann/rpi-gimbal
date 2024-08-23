@@ -316,6 +316,8 @@ public:
 
             if ( tokens.size() == 2 )
             {
+               coral::log::status("Parsing line '%s' = '%s'\n", tokens[0].c_str(), tokens[1].c_str());
+               
                if ( tokens[0] == "imu_lim_x_min" )
                {
                   control_.set_limit_x_min(std::stoi(tokens[1]));
