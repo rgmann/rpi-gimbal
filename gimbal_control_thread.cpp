@@ -136,7 +136,8 @@ void GimbalControlThread::compute_coefficients()
 void GimbalControlThread::run( const bool& shutdown )
 {
    Adxl345Controller::AccelerationData accel_space;
-   AngularVector pan_tilt_space;
+   float phi = 0.0;
+   float theta = 0.0;
 
    while ( shutdown == false )
    {
@@ -148,8 +149,8 @@ void GimbalControlThread::run( const bool& shutdown )
 
          if ( control_enabled_ )
          {
-            compute_pan_tilt( accel_space, pan_tilt_space );
-            pan_tilt_.ease_position( pan_tilt_space.phi, pan_tilt_space.theta );
+            compute_pan_tilt( accel_space, phi, theta );
+            pan_tilt_.ease_position( phi, theta );
          }
       }
 
