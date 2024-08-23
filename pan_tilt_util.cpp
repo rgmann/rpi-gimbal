@@ -305,19 +305,21 @@ public:
       const std::string file_name = args[0];
       std::ifstream file_stream(file_name, std::ios::in);
 
+      coral::log::status("Reading settings from '%s'...\n", file_name.c_str());
+
       if ( file_stream.is_open() )
       {
          size_t line_index = 0;
 
-         for ( std::array<char, 128> line_raw; file_stream.getline(&line_raw[0], '\n');)
+         std::string line;
+         while ( std::getline(file_stream, line) )
          {
-            std::string line(std::begin(line_raw), std::end(line_raw));
             std::vector<std::string> tokens = coral::helpers::string_helper::split(line, ' ');
 
             if ( tokens.size() == 2 )
             {
                coral::log::status("Parsing line '%s' = '%s'\n", tokens[0].c_str(), tokens[1].c_str());
-               
+
                if ( tokens[0] == "imu_lim_x_min" )
                {
                   control_.set_limit_x_min(std::stoi(tokens[1]));
