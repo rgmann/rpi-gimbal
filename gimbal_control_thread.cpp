@@ -31,10 +31,10 @@ bool GimbalControlThread::all_limits_set() const
 {
    bool limits_set = true;
 
-   limits_set_ &= std::get<1>(limit_x_min_);
-   limits_set_ &= std::get<1>(limit_x_max_);
-   limits_set_ &= std::get<1>(limit_y_min_);
-   limits_set_ &= std::get<1>(limit_y_min_);
+   limits_set &= std::get<1>(limit_x_min_);
+   limits_set &= std::get<1>(limit_x_max_);
+   limits_set &= std::get<1>(limit_y_min_);
+   limits_set &= std::get<1>(limit_y_max_);
 
    return limits_set;
 }
@@ -52,53 +52,53 @@ bool GimbalControlThread::enable_tracking()
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::set_lim_x_min( int16_t x_min )
+void GimbalControlThread::set_limit_x_min( int16_t x_min )
 {
    limit_x_min_ = Limit{x_min, true};
    compute_coefficients();
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_lim_x_min()
+void GimbalControlThread::get_limit_x_min()
 {
    return std::get<0>(limit_x_min_);
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::set_lim_x_max( int16_t x_max )
+void GimbalControlThread::set_limit_x_max( int16_t x_max )
 {
    limit_x_max_ = Limit{x_max, true};
    compute_coefficients();
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_lim_x_max()
+void GimbalControlThread::get_limit_x_max()
 {
    return std::get<0>(limit_x_max_);
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::set_lim_y_min( int16_t y_min )
+void GimbalControlThread::set_limit_y_min( int16_t y_min )
 {
    limit_y_min_ = Limit{y_min, true};
    compute_coefficients();
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_lim_y_min()
+void GimbalControlThread::get_limit_y_min()
 {
    return std::get<0>(limit_y_min_);
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::set_lim_y_max( int16_t y_max )
+void GimbalControlThread::set_limit_y_max( int16_t y_max )
 {
    limit_y_max_ = Limit{y_max, true};
    compute_coefficients();
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_lim_y_max()
+void GimbalControlThread::get_limit_y_max()
 {
    return std::get<0>(limit_y_max_);
 }
@@ -120,15 +120,15 @@ void GimbalControlThread::compute_coefficients()
    if (all_limits_set())
    {
       m_y_ =
-         (pan_tilt_.get_theta_max() - pan_tilt_.get_theta_min()) /
+         (pan_tilt_.get_limit_theta_max() - pan_tilt_.get_limit_theta_min()) /
          static_cast<float>(std::get<0>(limit_y_max_) - std::get<0>(limit_y_min_));
 
       m_x_ =
-         (pan_tilt_.get_phi_max() - pan_tilt_.get_phi_min()) /
+         (pan_tilt_.get_limit_phi_max() - pan_tilt_.get_limit_phi_min()) /
          static_cast<float>(std::get<0>(limit_x_max_) - std::get<0>(limit_x_min_));
 
-      b_y_ = pan_tilt_.get_theta_min();
-      b_x_ = pan_tilt_.get_phi_min();
+      b_y_ = pan_tilt_.get_limit_theta_min();
+      b_x_ = pan_tilt_.get_limit_phi_min();
    }
 }
 

@@ -49,7 +49,7 @@ private:
 
    Adxl345Controller& imu_;
 
-   typedef Limit std::tuple<int16_t, bool>;
+   typedef std::tuple<int16_t, bool> Limit;
    Limit limit_x_min_;
    Limit limit_x_max_;
    Limit limit_y_min_;
