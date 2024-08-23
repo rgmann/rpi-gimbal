@@ -59,7 +59,7 @@ void GimbalControlThread::set_limit_x_min( int16_t x_min )
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_limit_x_min()
+int16_t GimbalControlThread::get_limit_x_min() const
 {
    return std::get<0>(limit_x_min_);
 }
@@ -72,7 +72,7 @@ void GimbalControlThread::set_limit_x_max( int16_t x_max )
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_limit_x_max()
+int16_t GimbalControlThread::get_limit_x_max() const
 {
    return std::get<0>(limit_x_max_);
 }
@@ -85,7 +85,7 @@ void GimbalControlThread::set_limit_y_min( int16_t y_min )
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_limit_y_min()
+int16_t GimbalControlThread::get_limit_y_min() const
 {
    return std::get<0>(limit_y_min_);
 }
@@ -98,7 +98,7 @@ void GimbalControlThread::set_limit_y_max( int16_t y_max )
 }
 
 //-----------------------------------------------------------------------------
-void GimbalControlThread::get_limit_y_max()
+int16_t GimbalControlThread::get_limit_y_max() const
 {
    return std::get<0>(limit_y_max_);
 }
