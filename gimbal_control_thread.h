@@ -12,11 +12,6 @@ public:
 
    GimbalControlThread(PanTiltController&, Adxl345Controller&);
 
-private:
-
-   GimbalControlThread(const GimbalControlThread&);
-   GimbalControlThread& operator= (const GimbalControlThread&);
-
    bool enable_tracking();
    void disable_tracking() { control_enabled_ = false; }
 
@@ -31,6 +26,11 @@ private:
    int16_t get_limit_y_min() const;
    void set_limit_y_max(int16_t);
    int16_t get_limit_y_max() const;
+
+private:
+
+   GimbalControlThread(const GimbalControlThread&);
+   GimbalControlThread& operator= (const GimbalControlThread&);
 
 private:
 
