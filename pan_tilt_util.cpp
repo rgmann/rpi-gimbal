@@ -134,17 +134,289 @@ private:
    Adxl345Controller& imu_;
 };
 
+class CalibrateImuCommand : public InteractiveCommand {
+public:
 
-// class PointCallback : public PanTiltThread::MeasurementCallback {
-// public:
+   CalibrateImuCommand( Adxl345Controller& imu, GimbalControlThread& control )
+      : InteractiveCommand( "clim", "Calibrate IMU" )
+      , imu_( imu )
+      , control_( control )
+   {
+   }
 
-//    void operator()( PanTiltThread::ControlMode mode, const PanTiltThread::Point& point )
-//    {
-//       if ( mode == PanTiltThread::kRaster )
-//          log::status("phi = %0.4f, theta = %0.4f, r = %0.6f\n",point.phi,point.theta,point.r);
-//    }
+   bool valid_limit_specifier(const std::string& limit_specifier)
+   {
+      if ( limit_specifier == "x_min" )
+      {
+         return true;
+      }
+      else if ( limit_specifier == "x_max" )
+      {
+         return true;
+      }
+      else if ( limit_specifier == "y_min" )
+      {
+         return true;
+      }
+      else if ( limit_specifier === "y_max" )
+      {
+         return true;
+      }
 
-// };
+      return false;
+   }
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      Adxl345Controller::AccelerationData vector;
+
+      if (args.size() < 1)
+      {
+         coral::log::error("Expected limit specifier of <x_min,x_max,y_min,y_max>\n");
+      }
+      else
+      {
+         const std::string& limit_specifier = args[1];
+
+         if ( valid_limit_specifier(limit_specifier) )
+         {
+            if ( imu_.read_acceleration_data(vector) )
+            {
+               if ( limit_specifier == "x_min" )
+               {
+                  control_.set_lim_x_min(vector.x);
+               }
+               else if ( limit_specifier == "x_max" )
+               {
+                  control_.set_lim_x_max(vector.x);
+               }
+               else if ( limit_specifier == "y_min" )
+               {
+                  control_.set_lim_y_min(vector.y);
+               }
+               else if ( limit_specifier === "y_max" )
+               {
+                  control_.set_lim_y_max(vector.y);
+               }
+            }
+            else
+            {
+               coral::log::error("ERROR reading from IMU");
+            }
+         }
+         else
+         {
+            coral::log::error("Invalid limit specifier. Expecting <x_min,x_max,y_min,y_max>\n.");
+         }
+      }
+   }
+
+private:
+
+   Adxl345Controller& imu_;
+   GimbalControlThread& control_;
+};
+
+class TrackCommand : public InteractiveCommand {
+public:
+
+   TrackCommand( GimbalControlThread& control )
+      : InteractiveCommand( "track", "Enable/disable tracking" )
+      , control_( state )
+      {}
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      if ( args.size() > 0 )
+      {
+         const std::string& state = args[0];
+
+         if ( state == "on" )
+         {
+            control_.enable_tracking();
+         }
+         else if ( state == "off" )
+         {
+            control_.disable_tracking();
+         }
+         else
+         {
+            coral::log::error("Invalid command argument: expecting 'on' or 'off'\n");
+         }
+      }
+   }
+
+private:
+
+   GimbalControlThread& control_;
+};
+
+
+class SetPointingLimitsCommand : public InteractiveCommand {
+public:
+
+   SetPointingLimitsCommand(PanTiltController& pan_tilt)
+      : InteractiveCommand( "plim", "Enable/disable tracking" )
+      , pan_tilt_(pan_tilt) {}
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      const std::string& limit_specifier = args[0];
+
+      if ( limit_specifier == "phi_min" )
+      {
+         pan_tilt_.set_limit_phi_min( pan_tilt_.get_phi() );
+      }
+      else if ( limit_specifier == "phi_max" )
+      {
+         pan_tilt_.set_limit_phi_max( pan_tilt_.get_phi() );
+      }
+      else if ( limit_specifier == "theta_min" )
+      {
+         pan_tilt_.set_limit_theta_min( pan_tilt_.get_theta() );
+      }
+      else if ( limit_specifier == "theta_max" )
+      {
+         pan_tilt_.set_limit_theta_max( pan_tilt_.get_theta() );
+      }
+      else
+      {
+         coral::log::error("Invalid limit specifier. Expecting <phi_min,phi_max,theta_min,theta_max>\n.");
+      }
+   }
+
+private:
+
+   PanTiltController& pan_tilt_;
+};
+
+class LoadLimitsCommand : public InteractiveCommand {
+public:
+
+   LoadLimitsCommand(GimbalControlThread& control, PanTiltController& pan_tilt)
+      : InteractiveCommand( "load", "Enable/disable tracking" )
+      , control_(control)
+      , pan_tilt_(pan_tilt) {}
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      const std::string file_name = args[0];
+      std::ifstream file_stream(file_name, std::ios::in);
+
+      if ( file_stream.is_open() )
+      {
+         size_t line_index = 0;
+
+         for ( std::array<char, 128> line_raw; file_stream.getline(&line_raw[0], '\n');)
+         {
+            std::string line(std::begin(line_raw), std::end(line_raw));
+            std::vector<std::string> tokens = coral::helpers::string_helper::split(line, ' ');
+
+            if ( tokens.size() == 2 )
+            {
+               if ( tokens[0] == "imu_lim_x_min" )
+               {
+                  control_.set_limit_x_min(std::stoi(tokens[1]))
+               }
+               else if ( tokens[0] == "imu_lim_x_max" )
+               {
+                  control_.set_limit_x_max(std::stoi(tokens[1]));
+               }
+               else if ( tokens[0] == "imu_lim_y_min" )
+               {
+                  control_.set_limit_y_min(std::stoi(tokens[1]));
+               }
+               else if ( tokens[0] == "imu_lim_y_max" )
+               {
+                  control_.set_limit_y_max(std::stoi(tokens[1]));
+               }
+               else if ( tokens[0] == "gimbal_lim_phi_min" )
+               {
+                  pan_tilt_.set_limit_phi_min(deg_to_rad(std::stof(tokens[1])));
+               }
+               else if ( tokens[0] == "gimbal_lim_phi_max" )
+               {
+                  pan_tilt_.set_limit_phi_max(deg_to_rad(std::stof(tokens[1])));
+               }
+               else if ( tokens[0] == "gimbal_lim_theta_min" )
+               {
+                  pan_tilt_.set_limit_theta_min(deg_to_rad(std::stof(tokens[1])));
+               }
+               else if ( tokens[0] == "gimbal_lim_theta_max" )
+               {
+                  pan_tilt_.set_limit_theta_max(deg_to_rad(std::stof(tokens[1])));
+               }
+               else if ( tokens[0] == "gimbal_speed" )
+               {
+                  pan_tilt_.set_speed(std::stof(tokens[1]));
+               }
+               else
+               {
+                  coral::log::warn("Unrecognized argument at line %d. Skipping.\n", line_index);
+               }
+            }
+            else
+            {
+               coral::log::warn("Malformed arguments at line %d. Skipping.\n", line_index);
+            }
+
+            ++line_index;
+         }
+      }
+      else
+      {
+         coral::log::error("Error opening file at '%s'\n", file_name.c_str());
+      }
+   }
+
+private:
+
+   GimbalControlThread& control_;
+   PanTiltController& pan_tilt_;
+};
+
+class StoreLimitsCommand : public InteractiveCommand {
+public:
+
+   StoreLimitsCommand(GimbalControlThread& control, PanTiltController& pan_tilt)
+      : InteractiveCommand( "store", "Enable/disable tracking" )
+      , control_(control)
+      , pan_tilt_(pan_tilt) {}
+
+   void process( const coral::cli::ArgumentList& args )
+   {
+      const std::string file_name = args[0];
+      std::ofstream file_stream(file_name, std::ios::out);
+
+      if ( file_stream.is_open() )
+      {
+         file_stream << "imu_lim_x_min " << control_.get_limit_x_min() << std::endl;
+         file_stream << "imu_lim_x_max " << control_.get_limit_x_max() << std::endl;
+
+         file_stream << "imu_lim_y_min " << control_.get_limit_y_min() << std::endl;
+         file_stream << "imu_lim_y_max " << control_.get_limit_y_max() << std::endl;
+
+         file_stream << "gimbal_lim_phi_min " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_phi_min()) << std::endl;
+         file_stream << "gimbal_lim_phi_max " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_phi_max()) << std::endl;
+
+         file_stream << "gimbal_lim_theta_min " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_theta_min()) << std::endl;
+         file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>rad_to_deg(pan_tilt_.get_theta_max()) << std::endl;
+
+         file_stream << "gimbal_speed " << pan_tilt_.get_speed() << std::endl;
+
+         file_stream.close();
+      }
+      else
+      {
+         coral::log::error("Error opening file at '%s'\n", file_name.c_str());
+      }
+   }
+
+private:
+
+   GimbalControlThread& control_;
+   PanTiltController&   pan_tilt_;
+};
 
 
 int main( int argc, char** argv )
@@ -172,6 +444,9 @@ int main( int argc, char** argv )
          {
             PanTiltController pan_tilt( &pwm, PAN_CHANNEL, TILT_CHANNEL );
 
+            GimbalControlThread control_thread(pan_tilt, imu);
+            control_thread.launch();
+
             InteractiveCommandRouter router;
 
             router.add( std::make_shared<PanCommand>(pan_tilt) );
@@ -180,8 +455,15 @@ int main( int argc, char** argv )
             router.add( std::make_shared<GetPointCommand>(pan_tilt) );
             router.add( std::make_shared<SetSpeedCommand>(pan_tilt) );
             router.add( std::make_shared<ReadImuCommand>(imu) );
+            router.add( std::make_shared<CalibrateImuCommand>(imu, control_thread) );
+            router.add( std::make_shared<TrackCommand>(control_thread) );
+            router.add( std::make_shared<SetPointingLimitsCommand>(pan_tilt) );
+            router.add( std::make_shared<LoadLimitsCommand>(control_thread, pan_tilt) );
+            router.add( std::make_shared<StoreLimitsCommand>(control_thread, pan_tilt) );
             
             router.run();
+
+            control_thread.cancel(true);
          }
          else
          {

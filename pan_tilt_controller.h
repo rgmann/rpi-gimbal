@@ -33,6 +33,8 @@
 #ifndef  PAN_TILT_CONTROLLER_H
 #define  PAN_TILT_CONTROLLER_H
 
+#include <tuple>
+
 class PwmController;
 
 class PanTiltController {
@@ -45,12 +47,25 @@ public:
    static constexpr float kMaxSpeedRadPerSec = 1.0;
 
    bool set_speed( float rad_per_sec );
+   float get_speed() const;
 
-   bool set_position( float phi, float theta );
-   bool ease_position( float phi, float theta );
+   bool set_position( float phi_rad, float theta_rad );
+   bool ease_position( float phi_rad, float theta_rad );
 
    float get_phi() const;
    float get_theta() const;
+
+   void set_limit_phi_min(float rad);
+   void set_limit_phi_max(float rad);
+
+   float get_limits_phi_min() const;
+   float get_limits_phi_max() const;
+
+   void set_limit_theta_min(float rad);
+   void set_limit_theta_max(float rad);
+
+   float get_limits_theta_min() const;
+   float get_limits_theta_max() const;
 
 private:
 
@@ -83,6 +98,14 @@ private:
 
    float current_phi_;
    float current_theta_;
+
+   typedef std::tuple<float, bool> Limit;
+
+   Limit limits_phi_min_rad_;
+   Limit limits_phi_max_rad_;
+
+   Limit limits_theta_min_rad_;
+   Limit limits_theta_max_rad_;
 };
 
 #endif // PAN_TILT_CONTROLLER_H

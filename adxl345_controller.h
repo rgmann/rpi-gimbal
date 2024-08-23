@@ -35,6 +35,10 @@ public:
       int16_t x;
       int16_t y;
       int16_t z;
+      AccelerationData()
+         : x(0)
+         , y(0)
+         , z(0) {}
    };
 
    bool read_acceleration_data(AccelerationData& data);
