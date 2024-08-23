@@ -159,7 +159,7 @@ public:
       {
          return true;
       }
-      else if ( limit_specifier === "y_max" )
+      else if ( limit_specifier == "y_max" )
       {
          return true;
       }
@@ -185,19 +185,19 @@ public:
             {
                if ( limit_specifier == "x_min" )
                {
-                  control_.set_lim_x_min(vector.x);
+                  control_.set_limit_x_min(vector.x);
                }
                else if ( limit_specifier == "x_max" )
                {
-                  control_.set_lim_x_max(vector.x);
+                  control_.set_limit_x_max(vector.x);
                }
                else if ( limit_specifier == "y_min" )
                {
-                  control_.set_lim_y_min(vector.y);
+                  control_.set_limit_y_min(vector.y);
                }
                else if ( limit_specifier === "y_max" )
                {
-                  control_.set_lim_y_max(vector.y);
+                  control_.set_limit_y_max(vector.y);
                }
             }
             else
