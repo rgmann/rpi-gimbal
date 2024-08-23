@@ -67,6 +67,8 @@ public:
    float get_limits_theta_min() const;
    float get_limits_theta_max() const;
 
+   bool all_limits_set() const;
+
 private:
 
    uint16_t phi_interp_to_ticks( const float& angle );
@@ -101,11 +103,11 @@ private:
 
    typedef std::tuple<float, bool> Limit;
 
-   Limit limits_phi_min_rad_;
-   Limit limits_phi_max_rad_;
+   Limit limit_phi_min_rad_;
+   Limit limit_phi_max_rad_;
 
-   Limit limits_theta_min_rad_;
-   Limit limits_theta_max_rad_;
+   Limit limit_theta_min_rad_;
+   Limit limit_theta_max_rad_;
 };
 
 #endif // PAN_TILT_CONTROLLER_H
