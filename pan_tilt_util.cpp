@@ -318,7 +318,7 @@ public:
             {
                if ( tokens[0] == "imu_lim_x_min" )
                {
-                  control_.set_limit_x_min(std::stoi(tokens[1]))
+                  control_.set_limit_x_min(std::stoi(tokens[1]));
                }
                else if ( tokens[0] == "imu_lim_x_max" )
                {
@@ -398,11 +398,11 @@ public:
          file_stream << "imu_lim_y_min " << control_.get_limit_y_min() << std::endl;
          file_stream << "imu_lim_y_max " << control_.get_limit_y_max() << std::endl;
 
-         file_stream << "gimbal_lim_phi_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_phi_min())) << std::endl;
-         file_stream << "gimbal_lim_phi_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_phi_max())) << std::endl;
+         file_stream << "gimbal_lim_phi_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_limit_phi_min())) << std::endl;
+         file_stream << "gimbal_lim_phi_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_limit_phi_max())) << std::endl;
 
-         file_stream << "gimbal_lim_theta_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_theta_min())) << std::endl;
-         file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_theta_max())) << std::endl;
+         file_stream << "gimbal_lim_theta_min " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_limit_theta_min())) << std::endl;
+         file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_limit_theta_max())) << std::endl;
 
          file_stream << "gimbal_speed " << pan_tilt_.get_speed() << std::endl;
 
