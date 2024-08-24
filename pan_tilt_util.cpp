@@ -235,7 +235,10 @@ public:
 
          if ( state == "on" )
          {
-            control_.enable_tracking();
+            if ( !control_.enable_tracking() )
+            {
+               coral::log::warn("Failed to enable tracking. Verify all settings set.\n");
+            }
          }
          else if ( state == "off" )
          {
@@ -243,8 +246,12 @@ public:
          }
          else
          {
-            coral::log::error("Invalid command argument: expecting 'on' or 'off'\n");
+            coral::log::warn("Expecting arg: <on|off>\n");
          }
+      }
+      else
+      {
+         coral::log::warn("Expecting arg: <on|off>\n");
       }
    }
 
@@ -318,8 +325,6 @@ public:
 
             if ( tokens.size() == 2 )
             {
-               coral::log::status("Parsing line '%s' = '%s'\n", tokens[0].c_str(), tokens[1].c_str());
-
                if ( tokens[0] == "imu_lim_x_min" )
                {
                   control_.set_limit_x_min(std::stoi(tokens[1]));
@@ -355,6 +360,17 @@ public:
                else if ( tokens[0] == "gimbal_speed" )
                {
                   pan_tilt_.set_speed(std::stof(tokens[1]));
+               }
+               else if ( tokens[0] == "track_method" )
+               {
+                  if ( tokens[1] == "instant" )
+                  {
+                     control_.set_track_method(GimbalControlThread::InstantTo);
+                  }
+                  else
+                  {
+                     control_.set_track_method(GimbalControlThread::EaseTo);
+                  }
                }
                else
                {
@@ -409,6 +425,8 @@ public:
          file_stream << "gimbal_lim_theta_max " << static_cast<int16_t>(rad_to_deg(pan_tilt_.get_limit_theta_max())) << std::endl;
 
          file_stream << "gimbal_speed " << pan_tilt_.get_speed() << std::endl;
+
+         file_stream << "track_method " << (control_.get_track_method() == GimbalControlThread::InstantTo) ? "instant" : "ease" << std::endl;
 
          file_stream.close();
       }

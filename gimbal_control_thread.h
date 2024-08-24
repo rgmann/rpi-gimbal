@@ -12,6 +12,13 @@ public:
 
    GimbalControlThread(PanTiltController&, Adxl345Controller&);
 
+   enum TrackMethod {
+      InstantTo,
+      EaseTo
+   };
+   void set_track_method(TrackMethod method);
+   TrackMethod get_track_method() const { return track_method_; }
+
    bool enable_tracking();
    void disable_tracking() { control_enabled_ = false; }
 
@@ -62,6 +69,8 @@ private:
 
    float b_x_;
    float b_y_;
+
+   TrackMethod track_method_;
 
    static constexpr int32_t kControlPeriodMs = 100;
 };

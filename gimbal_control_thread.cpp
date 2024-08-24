@@ -23,6 +23,7 @@ GimbalControlThread::GimbalControlThread(
    , m_y_(0.0)
    , b_x_(0.0)
    , b_y_(0.0)
+   , track_method_( GimbalControlThread::EaseTo )
 {
 }
 
@@ -150,7 +151,14 @@ void GimbalControlThread::run( const bool& shutdown )
          if ( control_enabled_ )
          {
             compute_pan_tilt( accel_space, phi, theta );
-            pan_tilt_.ease_position( phi, theta );
+            if ( track_method_ == GimbalControlThread::EaseTo )
+            {
+               pan_tilt_.ease_position( phi, theta );
+            }
+            else
+            {
+               pan_tilt_.set_position( phi, theta );
+            }
          }
       }
 
