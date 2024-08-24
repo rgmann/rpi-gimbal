@@ -16,7 +16,7 @@ public:
       InstantTo,
       EaseTo
    };
-   void set_track_method(TrackMethod method);
+   void set_track_method(TrackMethod method) { track_method_ = method; }
    TrackMethod get_track_method() const { return track_method_; }
 
    bool enable_tracking();
