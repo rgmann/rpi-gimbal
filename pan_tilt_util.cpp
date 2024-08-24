@@ -426,7 +426,12 @@ public:
 
          file_stream << "gimbal_speed " << pan_tilt_.get_speed() << std::endl;
 
-         file_stream << "track_method " << (control_.get_track_method() == GimbalControlThread::InstantTo) ? "instant" : "ease" << std::endl;
+         const std::string track_method = "instant";
+         if (control_.get_track_method() == GimbalControlThread::EaseTo)
+         {
+            track_method = "ease";
+         }
+         file_stream << "track_method " << track_method << std::endl;
 
          file_stream.close();
       }
